@@ -1,0 +1,29 @@
+./objects/zf_device_ov7725.o: \
+  ..\..\libraries\zf_device\zf_device_ov7725.c \
+  ..\..\libraries\zf_common\zf_common_debug.h \
+  ..\..\libraries\zf_common\zf_common_typedef.h \
+  D:\keil5\ARM\ARMCLANG\include\stdio.h \
+  D:\keil5\ARM\ARMCLANG\include\stdint.h \
+  D:\keil5\ARM\ARMCLANG\include\stdbool.h \
+  D:\keil5\ARM\ARMCLANG\include\stdarg.h \
+  D:\keil5\ARM\ARMCLANG\include\string.h \
+  D:\keil5\ARM\ARMCLANG\include\stdlib.h \
+  ..\..\libraries\zf_driver\zf_driver_delay.h \
+  ..\..\libraries\zf_driver\zf_driver_dma.h \
+  ..\..\libraries\zf_driver\zf_driver_gpio.h \
+  ..\..\libraries\sdk\hal_device_registers.h \
+  ..\..\libraries\sdk\mm32f3277g.h \
+  ..\..\libraries\sdk\CMSIS\Include\core_cm3.h \
+  C:\Users\ASUS\Desktop\单片机\暑假集训\MM32\ New\ Project\libraries\sdk\CMSIS\Include\cmsis_version.h \
+  C:\Users\ASUS\Desktop\单片机\暑假集训\MM32\ New\ Project\libraries\sdk\CMSIS\Include\cmsis_compiler.h \
+  C:\Users\ASUS\Desktop\单片机\暑假集训\MM32\ New\ Project\libraries\sdk\CMSIS\Include\cmsis_armclang.h \
+  D:\keil5\ARM\ARMCLANG\include\arm_compat.h \
+  D:\keil5\ARM\ARMCLANG\include\arm_acle.h \
+  ..\..\libraries\sdk\mm32f3277g_features.h \
+  ..\..\libraries\sdk\system_mm32f3277g.h \
+  ..\..\libraries\zf_driver\zf_driver_soft_iic.h \
+  ..\..\libraries\zf_driver\zf_driver_uart.h \
+  ..\..\libraries\zf_device\zf_device_camera.h \
+  ..\..\libraries\zf_common\zf_common_fifo.h \
+  ..\..\libraries\zf_device\zf_device_type.h \
+  ..\..\libraries\zf_device\zf_device_ov7725.h
