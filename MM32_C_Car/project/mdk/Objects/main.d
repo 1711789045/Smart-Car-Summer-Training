@@ -6,9 +6,9 @@
   ..\..\libraries\sdk\hal_device_registers.h \
   ..\..\libraries\sdk\mm32f3277g.h \
   ..\..\libraries\sdk\CMSIS\Include\core_cm3.h \
-  C:\Users\ASUS\Desktop\单片机\暑假集训\MM32\ New\ Project\libraries\sdk\CMSIS\Include\cmsis_version.h \
-  C:\Users\ASUS\Desktop\单片机\暑假集训\MM32\ New\ Project\libraries\sdk\CMSIS\Include\cmsis_compiler.h \
-  C:\Users\ASUS\Desktop\单片机\暑假集训\MM32\ New\ Project\libraries\sdk\CMSIS\Include\cmsis_armclang.h \
+  C:\Users\ASUS\learngit\Intelligent-Car-Summer-Training\MM32_C_Car\libraries\sdk\CMSIS\Include\cmsis_version.h \
+  C:\Users\ASUS\learngit\Intelligent-Car-Summer-Training\MM32_C_Car\libraries\sdk\CMSIS\Include\cmsis_compiler.h \
+  C:\Users\ASUS\learngit\Intelligent-Car-Summer-Training\MM32_C_Car\libraries\sdk\CMSIS\Include\cmsis_armclang.h \
   D:\keil5\ARM\ARMCLANG\include\arm_compat.h \
   D:\keil5\ARM\ARMCLANG\include\arm_acle.h \
   ..\..\libraries\sdk\mm32f3277g_features.h \
@@ -87,4 +87,5 @@
   ..\..\libraries\zf_device\zf_device_wifi_uart.h \
   ..\..\libraries\zf_device\zf_device_wireless_uart.h \
   ..\..\libraries\components\fatfs\source\ffconf.h \
-  ..\..\libraries\components\fatfs\source\ff.h ..\code\auto_menu.h
+  ..\..\libraries\components\fatfs\source\ff.h ..\code\auto_menu.h \
+  ..\code\motor.h ..\code\encoder.h

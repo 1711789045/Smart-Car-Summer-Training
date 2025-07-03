@@ -35,7 +35,8 @@
 
 #include "zf_common_headfile.h"
 #include "auto_menu.h"
-
+#include "motor.h"
+#include "encoder.h"
 // 打开新的工程或者工程移动了位置务必执行以下操作
 // 第一步 关闭上面所有打开的文件
 // 第二步 project->clean  等待下方进度条走完
@@ -43,6 +44,12 @@
 // 本例程是开源库移植用空工程
 
 // **************************** 代码区域 ****************************
+#define PIT                             (TIM6_PIT )                             // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
+#define PIT_PRIORITY                    (TIM6_IRQn)                             // 对应周期中断的中断编号 在 mm32f3277gx.h 头文件中查看 IRQn_Type 枚举体
+
+int16 encoder_data_l = 0;
+int16 encoder_data_r = 0;
+
 int main(void)
 {
     clock_init(SYSTEM_CLOCK_120M);                                              // 初始化芯片时钟 工作频率为 120MHz
@@ -50,6 +57,11 @@ int main(void)
                                                                // 初始化默认 Debug UART
 	menu_init();
 	
+	motor_init();
+	
+	encoder_init();
+	pit_ms_init(PIT, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
+    interrupt_set_priority(PIT_PRIORITY, 0); 
     // 此处编写用户代码 例如外设初始化代码等
     
     // 此处编写用户代码 例如外设初始化代码等
@@ -57,9 +69,34 @@ int main(void)
     while(1)
     {
         // 此处编写需要循环执行的代码
-        show_process(NULL);
+		show_process(NULL);
+		
+		
+		ips200_show_int(0,64,encoder_data_l,4);
+		ips200_show_int(0,80,encoder_data_r,4);
+		
+		printf("ENCODER_QUADDEC counter \t%d .\r\n", encoder_data_l);     // 输出编码器计数信息
+        printf("ENCODER_DIR counter \t\t%d .\r\n", encoder_data_r);           // 输出编码器计数信息
+		
         system_delay_ms(20);
         // 此处编写需要循环执行的代码
     }
 }
+
+//-------------------------------------------------------------------------------------------------------------------
+// 函数简介     PIT 的周期中断处理函数 这个函数将在 PIT 对应的定时器中断调用 详见 isr.c
+// 参数说明     void
+// 返回参数     void
+// 使用示例     pit_handler();
+//-------------------------------------------------------------------------------------------------------------------
+void pit_handler (void)
+{
+	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
+    encoder_data_r = encoder_get_count(ENCODER_R);                          // 获取编码器计数
+
+    encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
+    encoder_clear_count(ENCODER_R);                                           // 清空编码器计数
+}
+
+
 // **************************** 代码区域 ****************************
