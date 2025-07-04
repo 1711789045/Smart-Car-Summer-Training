@@ -37,6 +37,7 @@
 #include "auto_menu.h"
 #include "motor.h"
 #include "encoder.h"
+#include "image.h"
 // 打开新的工程或者工程移动了位置务必执行以下操作
 // 第一步 关闭上面所有打开的文件
 // 第二步 project->clean  等待下方进度条走完
@@ -66,18 +67,17 @@ int main(void)
     
     // 此处编写用户代码 例如外设初始化代码等
 
+	motor_setspeed(0);
     while(1)
     {
         // 此处编写需要循环执行的代码
-		show_process(NULL);
+//		show_process(NULL);
+		image_core(mt9v03x_image,240,180);
 		
 		
 		ips200_show_int(0,64,encoder_data_l,4);
 		ips200_show_int(0,80,encoder_data_r,4);
-		
-		printf("ENCODER_QUADDEC counter \t%d .\r\n", encoder_data_l);     // 输出编码器计数信息
-        printf("ENCODER_DIR counter \t\t%d .\r\n", encoder_data_r);           // 输出编码器计数信息
-		
+				
         system_delay_ms(20);
         // 此处编写需要循环执行的代码
     }

@@ -11,7 +11,10 @@
 #define MOTOR_L_DIR             (A0)
 #define MOTOR_R_DIR             (A2)
 
+#define SPEED_LIMIT             50           //速度上限
+
+
 void motor_init(void);
-void motor_setspeed(uint8 motor,int16 speed);
+void motor_setspeed(int16 speed);
 
 #endif
