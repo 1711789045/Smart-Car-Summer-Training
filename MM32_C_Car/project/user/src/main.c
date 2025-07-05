@@ -60,6 +60,8 @@ int main(void)
 	
 	motor_init();
 	
+	mt9v03x_init();
+	
 	encoder_init();
 	pit_ms_init(PIT, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
     interrupt_set_priority(PIT_PRIORITY, 0); 
@@ -72,11 +74,13 @@ int main(void)
     {
         // 此处编写需要循环执行的代码
 //		show_process(NULL);
-		image_core(mt9v03x_image,240,180);
+		image_core(188,120);
+
+//		ips200_displayimage03x((const uint8 *)mt9v03x_image, 188,120);
+
 		
-		
-		ips200_show_int(0,64,encoder_data_l,4);
-		ips200_show_int(0,80,encoder_data_r,4);
+//		ips200_show_int(0,64,encoder_data_l,4);
+//		ips200_show_int(0,80,encoder_data_r,4);
 				
         system_delay_ms(20);
         // 此处编写需要循环执行的代码
