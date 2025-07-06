@@ -137,5 +137,8 @@ void Flash_Write();
 void Flash_Erase();
 
 
+extern float kp,ki,kd;
+extern int speed;
+
 #endif
 

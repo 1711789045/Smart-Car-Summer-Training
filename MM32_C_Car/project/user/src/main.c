@@ -51,6 +51,9 @@
 int16 encoder_data_l = 0;
 int16 encoder_data_r = 0;
 
+
+
+
 int main(void)
 {
     clock_init(SYSTEM_CLOCK_120M);                                              // 初始化芯片时钟 工作频率为 120MHz
@@ -68,20 +71,26 @@ int main(void)
     // 此处编写用户代码 例如外设初始化代码等
     
     // 此处编写用户代码 例如外设初始化代码等
-
-	motor_setspeed(0);
+	
+	
     while(1)
-    {
+    {	
         // 此处编写需要循环执行的代码
-//		show_process(NULL);
-		image_core(188,120);
-
+		show_process(NULL);
+//		image_core(188,120);
+		
+//		motor_setpwm(MOTOR_L,1000);
+//		motor_setpwm(MOTOR_R,1000);
+			
+		motor_set_pid(kp,ki,kd);
+		motor_setspeed(speed,encoder_data_l,encoder_data_r);
 //		ips200_displayimage03x((const uint8 *)mt9v03x_image, 188,120);
 
 		
-//		ips200_show_int(0,64,encoder_data_l,4);
-//		ips200_show_int(0,80,encoder_data_r,4);
-				
+		ips200_show_int(0,160,encoder_data_l,4);
+		ips200_show_int(0,176,encoder_data_r,4);
+		ips200_show_int(0,192,speed,4);
+	
         system_delay_ms(20);
         // 此处编写需要循环执行的代码
     }
@@ -96,10 +105,12 @@ int main(void)
 void pit_handler (void)
 {
 	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
-    encoder_data_r = encoder_get_count(ENCODER_R);                          // 获取编码器计数
+    encoder_data_r = 0-encoder_get_count(ENCODER_R);                          // 获取编码器计数
 
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
     encoder_clear_count(ENCODER_R);                                           // 清空编码器计数
+	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);
+
 }
 
 

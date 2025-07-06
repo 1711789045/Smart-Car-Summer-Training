@@ -460,6 +460,16 @@
               <FileType>5</FileType>
               <FilePath>..\code\image.h</FilePath>
             </File>
+            <File>
+              <FileName>pid.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\pid.c</FilePath>
+            </File>
+            <File>
+              <FileName>pid.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\pid.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
