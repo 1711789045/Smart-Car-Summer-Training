@@ -12,6 +12,25 @@ uint16 left_edge_line[IMAGE_H] = {0};      // 存储左边线
 uint16 right_edge_line[IMAGE_H] = {0};      // 存储右边线
 uint8 user_image[IMAGE_H][IMAGE_W];  //存储图像
 
+uint8 mid_line[IMAGE_H] = {0};         //各行中线位置
+uint8 mid_weight[IMAGE_H] = {           //各行中线权重
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	7 ,8 ,9 ,10,11,12,13,14,15,16,
+	17,18,19,20,20,20,20,19,18,17,
+	16,15,14,13,12,11,10,9 ,8 ,7 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
+};
+uint8 final_mid_line = 0;
+uint8 last_final_mid_line = 0;
+
+
 void get_image(void){
 	memcpy(user_image,mt9v03x_image,IMAGE_H*IMAGE_W);
 }
@@ -196,6 +215,25 @@ void search_line(const uint8 image[][IMAGE_W]){
 	}
 }
 
+void image_calculate_mid(void){
+	uint32 mid_weight_sum = 0;        //加权中线累加值
+	uint32 weight_sum = 0;            //权重累加值
+	uint8 temp = 0;                   //临时存储中线
+	for(int i = 0;i<=IMAGE_H;i++){
+		mid_line[i] = (left_edge_line[i] + right_edge_line[i])/2;
+		weight_sum += mid_weight[i];
+		mid_weight_sum += mid_line[i]*mid_weight[i];
+	}
+	temp = (uint8)(mid_weight_sum/weight_sum);
+	if(!last_final_mid_line)
+		final_mid_line = temp;
+	else
+		final_mid_line = temp*0.8+last_final_mid_line*0.2;  //互补滤波
+
+	last_final_mid_line = final_mid_line;
+	
+}
+
 
 
 void image_display_edge_line(const uint8 image[][IMAGE_W],uint16 display_width,uint16 display_height){
@@ -205,6 +243,8 @@ void image_display_edge_line(const uint8 image[][IMAGE_W],uint16 display_width,u
 		ips200_draw_point(left_edge_line[i],i,RGB565_RED);
 		ips200_draw_point(right_edge_line[i],i,RGB565_BLUE);
 		ips200_draw_point(reference_line[i],i,RGB565_YELLOW);
+		ips200_draw_point(mid_line[i],i,RGB565_GREEN);
+		ips200_show_int(0,208,final_mid_line,4);
 	}
 }
 
@@ -215,6 +255,8 @@ void image_core(uint16 display_width,uint16 display_height){
 	get_reference_point(user_image);
 	search_reference_col(user_image);
 	search_line(user_image);
+	
+	image_calculate_mid();
 	
 	image_display_edge_line(user_image,display_width,display_height);
 }

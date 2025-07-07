@@ -1,18 +1,9 @@
 #include "zf_common_headfile.h"
+#include  "motor.h"
 #include "pid.h"
 
 //占空比最大值是10000
 
-#define MOTOR_L         0
-#define MOTOR_R          1
-
-#define MOTOR_L_PWM_CH4                 (TIM5_PWM_CH4_A3)
-#define MOTOR_R_PWM_CH2                 (TIM5_PWM_CH2_A1)
-
-#define MOTOR_L_DIR             (A2)
-#define MOTOR_R_DIR             (A0)
-
-#define SPEED_LIMIT             5000           //速度上限
 
 static PID_TypeDef pid_left = {0};
 static PID_TypeDef pid_right = {0};
@@ -76,8 +67,8 @@ void motor_setspeed(int16 target, float current_l, float current_r) {
     int16 speed_r = pid_increment(&pid_right, target, current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
     
-	ips200_show_int(0,208,speed_l,4);
-	ips200_show_int(0,224,speed_r,4);
+//	ips200_show_int(0,208,speed_l,4);
+//	ips200_show_int(0,224,speed_r,4);
 	
     motor_setpwm(MOTOR_L, speed_l);
     motor_setpwm(MOTOR_R, speed_r);

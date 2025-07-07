@@ -1,4 +1,4 @@
-./objects/motor.o: ..\code\motor.c \
+./objects/servo.o: ..\code\servo.c \
   ..\..\libraries\zf_common\zf_common_headfile.h \
   D:\keil5\ARM\ARMCLANG\include\stdio.h \
   D:\keil5\ARM\ARMCLANG\include\stdint.h \
@@ -87,5 +87,4 @@
   ..\..\libraries\zf_device\zf_device_wifi_uart.h \
   ..\..\libraries\zf_device\zf_device_wireless_uart.h \
   ..\..\libraries\components\fatfs\source\ffconf.h \
-  ..\..\libraries\components\fatfs\source\ff.h ..\code\motor.h \
-  ..\code\pid.h
+  ..\..\libraries\components\fatfs\source\ff.h ..\code\servo.h

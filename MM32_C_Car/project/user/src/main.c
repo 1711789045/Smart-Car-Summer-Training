@@ -38,6 +38,7 @@
 #include "motor.h"
 #include "encoder.h"
 #include "image.h"
+#include "servo.h"
 // 打开新的工程或者工程移动了位置务必执行以下操作
 // 第一步 关闭上面所有打开的文件
 // 第二步 project->clean  等待下方进度条走完
@@ -66,6 +67,9 @@ int main(void)
 	mt9v03x_init();
 	
 	encoder_init();
+	
+//	servo_init();
+	 
 	pit_ms_init(PIT, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
     interrupt_set_priority(PIT_PRIORITY, 0); 
     // 此处编写用户代码 例如外设初始化代码等
@@ -76,15 +80,11 @@ int main(void)
     while(1)
     {	
         // 此处编写需要循环执行的代码
-		show_process(NULL);
-//		image_core(188,120);
-		
-//		motor_setpwm(MOTOR_L,1000);
-//		motor_setpwm(MOTOR_R,1000);
-			
+//		show_process(NULL);
+		image_core(188,120);
+
 		motor_set_pid(kp,ki,kd);
 		motor_setspeed(speed,encoder_data_l,encoder_data_r);
-//		ips200_displayimage03x((const uint8 *)mt9v03x_image, 188,120);
 
 		
 		ips200_show_int(0,160,encoder_data_l,4);
@@ -109,7 +109,7 @@ void pit_handler (void)
 
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
     encoder_clear_count(ENCODER_R);                                           // 清空编码器计数
-	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);
+//	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
 
 }
 
