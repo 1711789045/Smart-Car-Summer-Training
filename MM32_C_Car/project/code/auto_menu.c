@@ -601,9 +601,9 @@ void NULL_FUN(){
 
 }
 
-float kp= 0.6 ,ki = 0.06,kd = 0;
+float kp= 0.45,ki = 0,kd = 0.65;
 int speed=0;
-double test_c=100;
+float angle = 0.0;
 uint16 test_d=20;
 uint32 test_e=32;
 
@@ -613,7 +613,7 @@ void UNIT_SET(){
     unit_param_set(&ki,TYPE_FLOAT   ,0.01    ,1  ,3,NORMAL_PAR,"ki");
     unit_param_set(&kd,TYPE_FLOAT,0.1  ,1  ,3,NORMAL_PAR,"kd");
     unit_param_set(&speed,TYPE_INT,100    ,5 ,0,NORMAL_PAR,"speed");
-    unit_param_set(&test_e,TYPE_UINT32,1    ,6  ,0,NORMAL_PAR,"test_e");
+    unit_param_set(&angle,TYPE_FLOAT,0.1    ,2 ,2,NORMAL_PAR,"angle");
 }
 
 void FUN_INIT(){

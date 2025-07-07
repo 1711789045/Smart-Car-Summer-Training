@@ -68,7 +68,8 @@ int main(void)
 	
 	encoder_init();
 	
-//	servo_init();
+	servo_init();
+
 	 
 	pit_ms_init(PIT, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
     interrupt_set_priority(PIT_PRIORITY, 0); 
@@ -77,22 +78,32 @@ int main(void)
     // 此处编写用户代码 例如外设初始化代码等
 	
 	
+	ips200_show_string(0,160,"encoder_l:");
+	ips200_show_string(0,176,"encoder_r:");
+	ips200_show_string(0,192,"speed:");
+	ips200_show_string(0,208,"mid_line:");
+	ips200_show_string(0,224,"angle:");
+	
     while(1)
     {	
         // 此处编写需要循环执行的代码
-//		show_process(NULL);
-		image_core(188,120);
+		show_process(NULL);
+		image_core(188,120,0);
+		
+//		servo_setangle(-8);
+		
+		servo_set_pid(kp,ki,kd);
+		servo_control(final_mid_line);
 
-		motor_set_pid(kp,ki,kd);
 		motor_setspeed(speed,encoder_data_l,encoder_data_r);
 
+		ips200_show_int(96,160,encoder_data_l,4);
+		ips200_show_int(96,176,encoder_data_r,4);
+		ips200_show_int(96,192,speed,4);
 		
-		ips200_show_int(0,160,encoder_data_l,4);
-		ips200_show_int(0,176,encoder_data_r,4);
-		ips200_show_int(0,192,speed,4);
-	
-        system_delay_ms(20);
+		
         // 此处编写需要循环执行的代码
+		system_delay_ms(20);
     }
 }
 

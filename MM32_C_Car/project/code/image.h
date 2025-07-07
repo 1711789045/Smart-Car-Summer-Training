@@ -26,12 +26,13 @@ extern uint8 reference_contrast_ratio; //参考对比度
 extern uint16 reference_line[IMAGE_H];      // 存储参考列
 extern uint16 left_edge_line[IMAGE_H];      // 存储左边线
 extern uint16 right_edge_line[IMAGE_H];      // 存储右边线
+extern uint8 final_mid_line;
 
 void get_image(void);
 void get_reference_point(const uint8 image[][IMAGE_W]);
 void search_reference_col(const uint8 image[][IMAGE_W]);
 void search_line(const uint8 image[][IMAGE_W]);
 void image_display_edge_line(const uint8 image[][IMAGE_W],uint16 width,uint16 height);
-void image_core(uint16 display_width,uint16 display_height);
+void image_core(uint16 display_width,uint16 display_height,uint8 mode);
 
 #endif

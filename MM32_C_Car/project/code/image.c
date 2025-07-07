@@ -6,7 +6,7 @@ uint8 white_max_point = 0;             //动态白点最大值
 uint8 white_min_point = 0;             //动态白点最小值
 uint8 remote_distance[IMAGE_W] = {0};   //最长白列
 uint8 reference_col = 0;
-uint8 reference_contrast_ratio = 20; //参考对比度
+uint8 reference_contrast_ratio = 0.1*200; //参考对比度
 uint16 reference_line[IMAGE_H] = {0};      // 存储参考列
 uint16 left_edge_line[IMAGE_H] = {0};      // 存储左边线
 uint16 right_edge_line[IMAGE_H] = {0};      // 存储右边线
@@ -45,16 +45,18 @@ void get_reference_point(const uint8 image[][IMAGE_W]){
 	uint16 temp_j2 = (IMAGE_W+REFERENCE_COL)/2;	
 	
 	temp = REFERENCE_ROW * REFERENCE_COL;
-	for(int i = IMAGE_H-REFERENCE_ROW-1;i <= IMAGE_H-1;i++){
+	for(int i = IMAGE_H-REFERENCE_ROW;i <= IMAGE_H-1;i++){
 		for(int j = temp_j1;j <= temp_j2;j++){
 			temp1 += image[i][j];				//统计点求和
 		}
 	}
 	reference_point = (uint8)(temp1/temp);
-	white_max_point = (uint8)((int32)reference_point * WHITEMAXMUL/10);
-	white_min_point = (uint8)((int32)reference_point * WHITEMINMUL/10);
-	if(white_min_point < BLACKPOINT)
-		white_min_point = BLACKPOINT;
+	white_max_point = (uint8)func_limit_ab((int32)reference_point * WHITEMAXMUL/10,BLACKPOINT,255);
+	white_min_point = (uint8)func_limit_ab((int32)reference_point * WHITEMINMUL/10,BLACKPOINT,255);
+	
+//	ips200_show_int(96,240,reference_point,4);
+//	ips200_show_int(96,256,white_max_point,4);
+//	ips200_show_int(96,272,white_min_point,4);
 }
 
 void search_reference_col(const uint8 image[][IMAGE_W]){
@@ -64,10 +66,14 @@ void search_reference_col(const uint8 image[][IMAGE_W]){
 		remote_distance[col] = IMAGE_H-1;
 	}
 	for(col = 0;col < IMAGE_W;col+=CONTRASTOFFSET){                  //跳行，隔两行算一次
-		for	(row = IMAGE_H-1;row > STOPROW+CONTRASTOFFSET;row-=CONTRASTOFFSET){    //跳列，隔两列判断一次
-			if (row - CONTRASTOFFSET < 0) break;
+		for	(row = IMAGE_H-1;row >= STOPROW+CONTRASTOFFSET;row-=CONTRASTOFFSET){    //跳列，隔两列判断一次
 			temp1 = image[row][col];
 			temp2 = image[row-CONTRASTOFFSET][col];
+			
+			if(row == 5){   //计算对比度
+				remote_distance[col] = (uint8)row;
+				break;
+			}
 			
 			if(temp2 > white_max_point){           //对比点是白点
 				continue;
@@ -79,7 +85,7 @@ void search_reference_col(const uint8 image[][IMAGE_W]){
 			
 			temp3 = (temp1 - temp2)*200/(temp1 + temp2);
 			
-			if(temp3 >reference_contrast_ratio || row == STOPROW){   //计算对比度
+			if(temp3 >reference_contrast_ratio ){   //计算对比度
 				remote_distance[col] = (uint8)row;
 				break;
 			}
@@ -177,7 +183,7 @@ void search_line(const uint8 image[][IMAGE_W]){
 				search_time--;
 				
 				for(col = rightstartcol; col <= rightendcol ;col++){
-					if(col - CONTRASTOFFSET <0)
+					if(col + CONTRASTOFFSET >= IMAGE_W)
 						continue;
 					temp1 = image[row][col];
 					temp2 = image[row][col + CONTRASTOFFSET];
@@ -219,7 +225,7 @@ void image_calculate_mid(void){
 	uint32 mid_weight_sum = 0;        //加权中线累加值
 	uint32 weight_sum = 0;            //权重累加值
 	uint8 temp = 0;                   //临时存储中线
-	for(int i = 0;i<=IMAGE_H;i++){
+	for(int i = 0;i<IMAGE_H;i++){
 		mid_line[i] = (left_edge_line[i] + right_edge_line[i])/2;
 		weight_sum += mid_weight[i];
 		mid_weight_sum += mid_line[i]*mid_weight[i];
@@ -244,11 +250,12 @@ void image_display_edge_line(const uint8 image[][IMAGE_W],uint16 display_width,u
 		ips200_draw_point(right_edge_line[i],i,RGB565_BLUE);
 		ips200_draw_point(reference_line[i],i,RGB565_YELLOW);
 		ips200_draw_point(mid_line[i],i,RGB565_GREEN);
-		ips200_show_int(0,208,final_mid_line,4);
+		
+		ips200_show_int(96,208,final_mid_line,4);
 	}
 }
 
-void image_core(uint16 display_width,uint16 display_height){
+void image_core(uint16 display_width,uint16 display_height,uint8 mode){
 	get_image();
 	reference_point = 0; white_max_point = 0;white_min_point = 0;reference_col = 0;
 	
@@ -258,5 +265,6 @@ void image_core(uint16 display_width,uint16 display_height){
 	
 	image_calculate_mid();
 	
-	image_display_edge_line(user_image,display_width,display_height);
+	if(mode)
+		image_display_edge_line(user_image,display_width,display_height);
 }

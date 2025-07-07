@@ -5,10 +5,10 @@
 //占空比最大值是10000
 
 
-static PID_TypeDef pid_left = {0};
-static PID_TypeDef pid_right = {0};
+static PID_INCREMENT_TypeDef pid_left = {0};
+static PID_INCREMENT_TypeDef pid_right = {0};
 
-float motor_pid_kp = 0,motor_pid_ki = 0,motor_pid_kd = 0;
+float motor_pid_kp = 0.6,motor_pid_ki = 0.06,motor_pid_kd = 0;
 
 void motor_init(void){
 	// 初始化pwm通道2和4

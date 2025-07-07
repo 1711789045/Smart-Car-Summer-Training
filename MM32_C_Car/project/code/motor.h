@@ -11,7 +11,7 @@
 #define MOTOR_L_DIR             (A2)
 #define MOTOR_R_DIR             (A0)
 
-#define SPEED_LIMIT             5000           //速度上限
+#define SPEED_LIMIT             3000           //速度上限
 
 
 void motor_init(void);
