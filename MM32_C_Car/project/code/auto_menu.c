@@ -609,9 +609,9 @@ uint32 test_e=32;
 
 void UNIT_SET(){
 	//菜单单元调参参数初始化
-    unit_param_set(&kp,TYPE_FLOAT ,0.1  ,1  ,3,NORMAL_PAR,"kp");
+    unit_param_set(&kp,TYPE_FLOAT ,0.05  ,1  ,3,NORMAL_PAR,"kp");
     unit_param_set(&ki,TYPE_FLOAT   ,0.01    ,1  ,3,NORMAL_PAR,"ki");
-    unit_param_set(&kd,TYPE_FLOAT,0.1  ,1  ,3,NORMAL_PAR,"kd");
+    unit_param_set(&kd,TYPE_FLOAT,0.05  ,1  ,3,NORMAL_PAR,"kd");
     unit_param_set(&speed,TYPE_INT,100    ,5 ,0,NORMAL_PAR,"speed");
     unit_param_set(&angle,TYPE_FLOAT,0.1    ,2 ,2,NORMAL_PAR,"angle");
 }

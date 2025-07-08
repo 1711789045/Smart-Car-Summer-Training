@@ -29,6 +29,7 @@ uint8 mid_weight[IMAGE_H] = {           //各行中线权重
 };
 uint8 final_mid_line = 0;
 uint8 last_final_mid_line = 0;
+uint8 prospect = 0;
 
 
 void get_image(void){
@@ -240,6 +241,38 @@ void image_calculate_mid(void){
 	
 }
 
+void image_calculate_prospect(const uint8 image[][IMAGE_W]){
+	int col = IMAGE_W/2;
+	int16 temp1 = 0,temp2 = 0,temp3 = 0;
+	for	(int row = IMAGE_H-1;row > CONTRASTOFFSET;row--){    //跳列，隔两列判断一次
+		temp1 = image[row][col];
+		temp2 = image[row-CONTRASTOFFSET][col];
+		
+		if(row == 5){   //计算对比度
+			prospect = IMAGE_H-(uint8)row;
+			break;
+		}
+		
+		if(temp1 < white_min_point){           //当前点是黑点
+			prospect = IMAGE_H-(uint8)row;
+			break;
+		}
+		
+		if(temp2 > white_max_point){           //对比点是白点
+			continue;
+		}
+		
+		
+		temp3 = (temp1 - temp2)*200/(temp1 + temp2);
+		
+		if(temp3 >reference_contrast_ratio ){   //计算对比度
+			prospect = IMAGE_H-(uint8)row;
+			break;
+		}
+	}
+	ips200_show_int(96,224,prospect,4);
+
+}
 
 
 void image_display_edge_line(const uint8 image[][IMAGE_W],uint16 display_width,uint16 display_height){
@@ -264,6 +297,7 @@ void image_core(uint16 display_width,uint16 display_height,uint8 mode){
 	search_line(user_image);
 	
 	image_calculate_mid();
+	image_calculate_prospect(user_image);
 	
 	if(mode)
 		image_display_edge_line(user_image,display_width,display_height);

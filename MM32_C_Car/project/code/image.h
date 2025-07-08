@@ -27,6 +27,8 @@ extern uint16 reference_line[IMAGE_H];      // ´æ´¢²Î¿¼ÁÐ
 extern uint16 left_edge_line[IMAGE_H];      // ´æ´¢×ó±ßÏß
 extern uint16 right_edge_line[IMAGE_H];      // ´æ´¢ÓÒ±ßÏß
 extern uint8 final_mid_line;
+extern uint8 prospect;                     //Ç°Õ°Öµ
+
 
 void get_image(void);
 void get_reference_point(const uint8 image[][IMAGE_W]);

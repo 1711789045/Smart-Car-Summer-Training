@@ -95,6 +95,7 @@ int main(void)
 		servo_set_pid(kp,ki,kd);
 		servo_control(final_mid_line);
 
+		speed = motor_lose_line_protect(speed,prospect);
 		motor_setspeed(speed,encoder_data_l,encoder_data_r);
 
 		ips200_show_int(96,160,encoder_data_l,4);

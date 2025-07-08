@@ -18,4 +18,5 @@ void motor_init(void);
 void motor_set_pid(float kp,float ki,float kd);
 void motor_setpwm(uint8 motor,int16 speed);
 void motor_setspeed(int16 target,float current_l,float current_r);
+int16 motor_lose_line_protect(int16 speed,uint8 prospect);
 #endif
