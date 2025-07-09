@@ -35,10 +35,10 @@ void servo_set_pid(float kp,float ki,float kd){
 
 void servo_control(uint8 mid_line){
 	float angle = 0;
-	angle = pid_positional(&turn_pid,0,mid_line-MT9V03X_W/2,SERVO_MOTOR_LIMIT,
+	angle = pid_positional(&turn_pid,0,mid_line-MT9V03X_W/2.0,SERVO_MOTOR_LIMIT,
 							servo_pid_kp,servo_pid_ki,servo_pid_kd);
 	
-	ips200_show_int(96,224,angle,4);
+//	ips200_show_int(96,224,angle,4);
 	
 	servo_setangle(angle);
 }

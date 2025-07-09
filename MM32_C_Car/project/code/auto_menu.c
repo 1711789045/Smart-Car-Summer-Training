@@ -1,6 +1,7 @@
 #include "zf_common_headfile.h"
 #include "auto_menu.h"
 #include "key.h"
+#include "image.h"
 
 //按键信号量及按键反馈信号量
 #ifdef  MENU_USE_RTT
@@ -596,6 +597,24 @@ void rand_color(){
         showstr(0,(SON_NUM+1)*16,"rand");
     }
 }
+
+void show_image(){
+	if(IS_OK){
+		while(1){
+			image_core(188,120,1);
+			button_entry(NULL);
+
+			is_clear_flag = is_menu_clear();
+
+			if(is_clear_flag)
+				clear();
+
+			if(button2==1)
+				break;
+		}
+	}
+}
+
 //菜单空闲函数
 void NULL_FUN(){
 
@@ -609,16 +628,16 @@ uint32 test_e=32;
 
 void UNIT_SET(){
 	//菜单单元调参参数初始化
-    unit_param_set(&kp,TYPE_FLOAT ,0.05  ,1  ,3,NORMAL_PAR,"kp");
+    unit_param_set(&kp,TYPE_FLOAT ,0.01  ,1  ,3,NORMAL_PAR,"kp");
     unit_param_set(&ki,TYPE_FLOAT   ,0.01    ,1  ,3,NORMAL_PAR,"ki");
-    unit_param_set(&kd,TYPE_FLOAT,0.05  ,1  ,3,NORMAL_PAR,"kd");
+    unit_param_set(&kd,TYPE_FLOAT,0.01  ,1  ,3,NORMAL_PAR,"kd");
     unit_param_set(&speed,TYPE_INT,100    ,5 ,0,NORMAL_PAR,"speed");
     unit_param_set(&angle,TYPE_FLOAT,0.1    ,2 ,2,NORMAL_PAR,"angle");
 }
 
 void FUN_INIT(){
 	//菜单单元函数指针初始化
-	fun_init(NULL_FUN	,"NULL_FUN1");
+	fun_init(show_image	,"show_image");
 	fun_init(day_night	,"day_night");
 	fun_init(rand_color	,"rand_color");
 	fun_init(NULL_FUN	,"NULL_FUN2");

@@ -81,17 +81,17 @@ int main(void)
 	ips200_show_string(0,160,"encoder_l:");
 	ips200_show_string(0,176,"encoder_r:");
 	ips200_show_string(0,192,"speed:");
-	ips200_show_string(0,208,"mid_line:");
-	ips200_show_string(0,224,"angle:");
+	ips200_show_string(0,208,"cross_flag:");
+	ips200_show_string(0,224,"left:");
+	ips200_show_string(0,240,"right:");
+
 	
     while(1)
     {	
         // 此处编写需要循环执行的代码
 		show_process(NULL);
 		image_core(188,120,0);
-		
-//		servo_setangle(-8);
-		
+				
 		servo_set_pid(kp,ki,kd);
 		servo_control(final_mid_line);
 
