@@ -51,13 +51,13 @@ void get_reference_point(const uint8 image[][IMAGE_W]){
 			temp1 += image[i][j];				//统计点求和
 		}
 	}
-	reference_point = (uint8)(temp1/temp);
+	reference_point = (uint8)func_limit_ab((temp1/temp),BLACKPOINT,255);
 	white_max_point = (uint8)func_limit_ab((int32)reference_point * WHITEMAXMUL/10,BLACKPOINT,255);
 	white_min_point = (uint8)func_limit_ab((int32)reference_point * WHITEMINMUL/10,BLACKPOINT,255);
 	
-//	ips200_show_int(96,240,reference_point,4);
-//	ips200_show_int(96,256,white_max_point,4);
-//	ips200_show_int(96,272,white_min_point,4);
+	ips200_show_int(96,240,reference_point,4);
+	ips200_show_int(96,256,white_max_point,4);
+	ips200_show_int(96,272,white_min_point,4);
 }
 
 void search_reference_col(const uint8 image[][IMAGE_W]){
