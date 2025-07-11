@@ -55,9 +55,9 @@ void get_reference_point(const uint8 image[][IMAGE_W]){
 	white_max_point = (uint8)func_limit_ab((int32)reference_point * WHITEMAXMUL/10,BLACKPOINT,255);
 	white_min_point = (uint8)func_limit_ab((int32)reference_point * WHITEMINMUL/10,BLACKPOINT,255);
 	
-	ips200_show_int(96,240,reference_point,4);
-	ips200_show_int(96,256,white_max_point,4);
-	ips200_show_int(96,272,white_min_point,4);
+//	ips200_show_int(96,240,reference_point,4);
+//	ips200_show_int(96,256,white_max_point,4);
+//	ips200_show_int(96,272,white_min_point,4);
 }
 
 void search_reference_col(const uint8 image[][IMAGE_W]){
@@ -233,7 +233,7 @@ uint8 image_find_jump_point(uint16 *edge_line,uint8 down_num,uint8 up_num,uint8 
 			temp_data = func_abs(edge_line[down_num-i]-edge_line[down_num-i-1]);
 			if(temp_data>jump_num){
 				temp_jump_point = (uint8)(down_num-i);
-				break;
+				return temp_jump_point;
 			}
 		}
 	}
@@ -243,11 +243,11 @@ uint8 image_find_jump_point(uint16 *edge_line,uint8 down_num,uint8 up_num,uint8 
 			temp_data = func_abs(edge_line[up_num+i]-edge_line[up_num+i+1]);
 			if(temp_data>jump_num){
 				temp_jump_point = (uint8)(up_num+i);
-				break;
+				return temp_jump_point;
 			}
 		}
 	}
-	return temp_jump_point;
+	return 0;
 }
 
 void image_connect_point(uint16 *array_value, uint8 num0, uint8 num1)
@@ -264,26 +264,37 @@ void image_connect_point(uint16 *array_value, uint8 num0, uint8 num1)
 
 void image_cross_analysis(void){
 	uint32 track_width = 0;
-	uint8 start_point,end_point;
+	uint8 start_point = 0,end_point = 0;
 	for(int i = (IMAGE_H * 2 / 3);i >  (IMAGE_H / 3);i--){
 		track_width += (right_edge_line[i] - left_edge_line[i]);
 	}
 	
-	if(track_width > (IMAGE_W * (IMAGE_H * 4 / 15))){
+	if(!cross_flag && track_width > (IMAGE_W * (IMAGE_H * 4 / 15))){
 		cross_flag = 1;
 	}
 	
-	if(cross_flag){
-		start_point = image_find_jump_point(left_edge_line,IMAGE_H - 5,5,10,1)+2;
-		end_point = image_find_jump_point(left_edge_line,start_point-10,5,10,1)-2;
-		image_connect_point(left_edge_line,start_point,end_point);
+	if(cross_flag == 1){       //大片白色
+		start_point = image_find_jump_point(left_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
+		if(start_point>=10)
+			end_point = image_find_jump_point(left_edge_line,start_point-10,IMAGE_H/4,5,0);
+		if(start_point && end_point){
+			cross_flag = 2;
+		}
+		
 		
 		ips200_show_int(96,224,start_point,4);
 		ips200_show_int(128,224,end_point,4);
 		
-		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 5,5,10,1)+2;
-		end_point = image_find_jump_point(right_edge_line,start_point-10,5,10,1)-2;
-		image_connect_point(right_edge_line,start_point,end_point);
+		
+		start_point = 0;
+		end_point = 0;
+		
+		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
+		if(start_point>=10)
+			end_point = image_find_jump_point(right_edge_line,start_point-10,IMAGE_H/4,5,0);
+		if(start_point && end_point){       //已经搜到两个点
+			cross_flag = 2;
+		}
 		
 		ips200_show_int(96,240,start_point,4);
 		ips200_show_int(128,240,end_point,4);
@@ -291,6 +302,52 @@ void image_cross_analysis(void){
 		if(track_width < (IMAGE_W * (IMAGE_H * 1 / 5))){
 			cross_flag = 0;
 		}
+	}
+	if(cross_flag == 2){       //进十字
+		start_point = image_find_jump_point(left_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
+		if(start_point>=10)
+			end_point = image_find_jump_point(left_edge_line,start_point-10,IMAGE_H/4,5,0);
+		
+		if(start_point && !end_point){     //只搜到一个点
+			end_point = start_point-10;
+			start_point = IMAGE_H-5;
+		}
+		else{
+			start_point=start_point+10;
+			end_point=end_point-10;
+		}
+		image_connect_point(left_edge_line,start_point,end_point);
+		ips200_show_int(96,224,start_point,4);
+		ips200_show_int(128,224,end_point,4);
+		
+		
+		start_point = 0;
+		end_point = 0;
+		
+		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
+		if(start_point>=10)
+			end_point = image_find_jump_point(right_edge_line,start_point-10,IMAGE_H/4,5,0);
+		
+
+		
+		if(start_point && !end_point){     //只搜到一个点
+			end_point = start_point-10;
+			start_point = IMAGE_H-5;
+		}
+		else{
+			start_point=start_point+10;
+			end_point=end_point-10;
+		}
+		image_connect_point(right_edge_line,start_point,end_point);
+		ips200_show_int(96,240,start_point,4);
+		ips200_show_int(128,240,end_point,4);
+
+		
+		if(track_width < (IMAGE_W * (IMAGE_H * 1 / 5))){
+			cross_flag = 0;
+		}
+		ips200_show_int(96,256,cross_flag,4);
+
 	}
 }
 

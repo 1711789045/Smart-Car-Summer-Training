@@ -1,7 +1,8 @@
 #include "zf_common_headfile.h"
 #include  "servo.h"
 #include "pid.h"
-
+#include <stdlib.h>
+#include <math.h>
 
 static PID_POSITIONAL_TypeDef turn_pid = {0};
 
@@ -35,10 +36,13 @@ void servo_set_pid(float kp,float ki,float kd){
 
 void servo_control(uint8 mid_line){
 	float angle = 0;
+	float err = mid_line-MT9V03X_W/2.0;
+	float k = (exp(-fabs(err))-1)/(exp(-fabs(err))+1);
+	float kp = (fabs(k)/2+0.5) * servo_pid_kp;
 	angle = pid_positional(&turn_pid,0,mid_line-MT9V03X_W/2.0,SERVO_MOTOR_LIMIT,
 							servo_pid_kp,servo_pid_ki,servo_pid_kd);
 	
-//	ips200_show_int(96,224,angle,4);
+	ips200_show_float(96,288,kp,1,3);
 	
 	servo_setangle(angle);
 }

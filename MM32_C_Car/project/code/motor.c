@@ -70,12 +70,12 @@ void motor_setspeed(int16 target, float current_l, float current_r) {
 //	ips200_show_int(0,208,speed_l,4);
 //	ips200_show_int(0,224,speed_r,4);
 	
-    motor_setpwm(MOTOR_L, speed_r);
+    motor_setpwm(MOTOR_L, speed_l);
     motor_setpwm(MOTOR_R, speed_r);
 }
 
 int16 motor_lose_line_protect(int16 speed,uint8 prospect){
-	if(prospect<20){
+	if(prospect<5){
 		return 0;
 	}
 	return speed;
