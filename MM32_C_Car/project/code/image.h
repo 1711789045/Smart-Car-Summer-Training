@@ -16,6 +16,11 @@
 #define CONTRASTOFFSET      3          //搜线对比度偏移
 #define STOPROW            0           //搜线停止行
 #define SEARCHRANGE        10          //搜线半径
+#define CIRCLE_1_TIME      2          //环岛状态一计时时间，单位100ms
+#define CIRCLE_2_TIME      5          //环岛状态二计时时间，单位100ms
+#define CIRCLE_4_TIME      5           //环岛状态四计时时间，单位100ms
+#define CIRCLE_5_TIME      5           //环岛状态五计时时间，单位100ms
+
 
 extern uint8 reference_point;
 extern uint8 white_max_point;          //动态白点最大值
@@ -28,6 +33,10 @@ extern uint16 left_edge_line[IMAGE_H];      // 存储左边线
 extern uint16 right_edge_line[IMAGE_H];      // 存储右边线
 extern uint8 final_mid_line;
 extern uint8 prospect;                     //前瞻值
+extern uint8 single_edge_err[IMAGE_H];
+extern uint8 circle_flag;                  //环岛标志位
+extern uint16 circle_time;                  
+extern uint8 mid_mode;                    //循线模式
 
 
 void get_image(void);

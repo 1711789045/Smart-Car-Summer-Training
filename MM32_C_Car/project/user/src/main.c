@@ -39,6 +39,7 @@
 #include "encoder.h"
 #include "image.h"
 #include "servo.h"
+#include "beep.h"
 // 打开新的工程或者工程移动了位置务必执行以下操作
 // 第一步 关闭上面所有打开的文件
 // 第二步 project->clean  等待下方进度条走完
@@ -70,6 +71,7 @@ int main(void)
 	
 	servo_init();
 
+	beep_init();
 	 
 	pit_ms_init(PIT, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
     interrupt_set_priority(PIT_PRIORITY, 0); 
@@ -81,7 +83,9 @@ int main(void)
 	ips200_show_string(0,160,"encoder_l:");
 	ips200_show_string(0,176,"encoder_r:");
 	ips200_show_string(0,192,"speed:");
-	ips200_show_string(0,208,"cross_flag:");
+	ips200_show_string(0,208,"circle_flag:");
+	ips200_show_string(136,208,"midmode:");
+
 	ips200_show_string(0,224,"left:");
 	ips200_show_string(0,240,"right:");
 
@@ -101,6 +105,10 @@ int main(void)
 		ips200_show_int(96,160,encoder_data_l,4);
 		ips200_show_int(96,176,encoder_data_r,4);
 		ips200_show_int(96,192,speed,4);
+		ips200_show_int(96,208,circle_flag,4);
+		ips200_show_int(200,208,mid_mode,4);
+
+
 		
 		
         // 此处编写需要循环执行的代码
@@ -118,11 +126,17 @@ void pit_handler (void)
 {
 	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
     encoder_data_r = 0-encoder_get_count(ENCODER_R);                          // 获取编码器计数
-
+	
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
     encoder_clear_count(ENCODER_R);                                           // 清空编码器计数
 //	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
-
+	circle_time++;
+	beep_off();
+	if(beep_flag == 1){
+		beep_on();
+		beep_flag = 0;
+	}
+	
 }
 
 

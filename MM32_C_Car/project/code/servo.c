@@ -6,7 +6,7 @@
 
 static PID_POSITIONAL_TypeDef turn_pid = {0};
 
-float servo_pid_kp = 0.3,servo_pid_ki = 0,servo_pid_kd = 0.35;
+float servo_pid_kp = 0.35,servo_pid_ki = 0,servo_pid_kd = 0.56;
 
 
 void servo_init(void){

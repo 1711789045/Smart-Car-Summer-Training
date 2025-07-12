@@ -480,6 +480,16 @@
               <FileType>5</FileType>
               <FilePath>..\code\servo.h</FilePath>
             </File>
+            <File>
+              <FileName>beep.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\code\beep.c</FilePath>
+            </File>
+            <File>
+              <FileName>beep.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>..\code\beep.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

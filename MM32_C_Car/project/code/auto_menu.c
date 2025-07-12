@@ -609,8 +609,12 @@ void show_image(){
 			if(is_clear_flag)
 				clear();
 
-			if(button2==1)
+			if(button2==1){
+				for(int i = 0;i <= IMAGE_H-1;i++){
+					printf("%d ",single_edge_err[i] );     // 输出编码器计数信息
+				}
 				break;
+			}
 		}
 	}
 }
@@ -620,8 +624,8 @@ void NULL_FUN(){
 
 }
 
-float kp= 0.3,ki = 0,kd = 0.35;
-int speed=0;
+float kp= 0.35,ki = 0,kd = 0.56;
+int speed=2000;
 float angle = 0.0;
 uint16 test_d=20;
 uint32 test_e=32;

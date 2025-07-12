@@ -1,5 +1,6 @@
 #include "zf_common_headfile.h"
 #include "image.h"
+#include "beep.h"
 
 uint8 reference_point = 0;
 uint8 white_max_point = 0;             //动态白点最大值
@@ -27,10 +28,27 @@ uint8 mid_weight[IMAGE_H] = {           //各行中线权重
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
 };
+uint8 single_edge_err[IMAGE_H] = {           //各行中线权重
+	11,11,12,13,13,14,15,15,16,17,
+	17,18,19,19,20,20,21,22,23,23, 
+	24,25,25,27,27,28,28,29,30,30,
+	31,32,32,33,34,34,35,35,36,37,
+	37,38,39,40,40,42,42,42,43,44,
+	45,45,46,47,47,48,49,49,50,50,
+	51,52,52,53,54,54,55,56,57,57,
+	58,59,60,60,61,62,62,63,64,64,
+	65,65,66,67,67,68,69,69,70,72,
+	71,72,73,74,74,75,76,76,77,78,
+	78,79,79,80,80,81,82,82,83,84,
+	85,85,86,87,87,88,89,89,90,91 
+};
 uint8 final_mid_line = 0;                 //加权中线值
 uint8 last_final_mid_line = 0;            //上次加权中线值
-uint8 prospect = 0;                     //前瞻值
+uint8 prospect = 100;                     //前瞻值
 uint8 cross_flag = 0;                    //十字标志位
+uint8 mid_mode = 0;                      //循线模式，0表示循两边线，1循左边线，2循右边线
+uint8 circle_flag = 0;
+uint16 circle_time = 0;
 
 void get_image(void){
 	memcpy(user_image,mt9v03x_image,IMAGE_H*IMAGE_W);
@@ -351,15 +369,105 @@ void image_cross_analysis(void){
 	}
 }
 
-void image_calculate_mid(void){
+
+void image_circle_analysis(void){
+	if(circle_flag == 0){           //识别环岛
+		mid_mode = 0;
+		for(int i = IMAGE_H-15;i>0;i--){
+			if(left_edge_line[i]<3)
+				return;
+		}
+		uint8 start_point = 0,end_point = 0;
+		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 5,5,10,1);
+		if(start_point)
+			end_point = image_find_jump_point(right_edge_line,start_point-10,5,10,0);
+		if(end_point){
+			if(start_point - end_point>70){
+				circle_flag = 1;
+				circle_time = 0;     //开始计时
+				beep_flag = 1;
+			}
+		}
+		ips200_show_int(96,240,start_point,4);
+		ips200_show_int(128,240,end_point,4);
+	}
+	else if (circle_flag == 1){      //看到环岛后在出环岛处沿左边线直走
+		mid_mode = 1;
+		if(circle_time >= CIRCLE_1_TIME){
+			circle_time = 0;
+			circle_flag = 2;
+			beep_flag = 1;
+		}
+	}
+	else if (circle_flag == 2){      //到达入口后沿右边线入岛
+		mid_mode = 2;
+		if(circle_time >= CIRCLE_2_TIME){
+			circle_time = 0;
+			circle_flag = 3;
+			beep_flag = 1;
+
+		}
+	}
+	else if (circle_flag == 3){      //入岛后沿左边线转弯
+		mid_mode = 0;
+//		if(final_mid_line < IMAGE_W/2+10){//当车想往左转时说明到达出口
+//			mid_mode = 2;
+//			circle_time = 0;
+//			circle_flag = 4;
+//		}
+		if(left_edge_line[IMAGE_H/2]<3 && left_edge_line[IMAGE_H/2-1]<3 &&left_edge_line[IMAGE_H/2]<3){//当车想往左转时说明到达出口
+			mid_mode = 2;
+			circle_time = 0;
+			circle_flag = 4;
+			beep_flag = 1;
+
+		}
+	}
+	else if(circle_flag == 4){       //在出口处沿右边线走
+		mid_mode = 2;
+		if(circle_time >= CIRCLE_4_TIME){
+			circle_time = 0;
+			circle_flag = 5;
+			beep_flag = 1;
+
+		}
+	}
+	else if(circle_flag == 5){       //沿左边线直走离开环岛
+		mid_mode = 1;
+		if(circle_time >= CIRCLE_5_TIME){
+			circle_time = 0;
+			circle_flag = 0;
+		}
+	}
+	
+}
+
+
+void image_calculate_mid(uint8 mode){
 	uint32 mid_weight_sum = 0;        //加权中线累加值
 	uint32 weight_sum = 0;            //权重累加值
 	uint8 temp = 0;                   //临时存储中线
-	for(int i = 0;i<IMAGE_H;i++){
-		mid_line[i] = (left_edge_line[i] + right_edge_line[i])/2;
-		weight_sum += mid_weight[i];
-		mid_weight_sum += mid_line[i]*mid_weight[i];
+	if(mode == 0){
+		for(int i = 0;i<IMAGE_H;i++){
+			mid_line[i] = (left_edge_line[i] + right_edge_line[i])/2;
+		}
 	}
+	if(mode == 1){
+		for(int i = 0;i<IMAGE_H;i++){
+			mid_line[i] = func_limit_ab(left_edge_line[i] + single_edge_err[i],0,IMAGE_W);
+		}
+	}
+	if(mode == 2){
+		for(int i = 0;i<IMAGE_H;i++){
+			mid_line[i] = func_limit_ab(right_edge_line[i] - single_edge_err[i],0,IMAGE_W);
+		}
+	}
+	
+	
+	for(int i = 0;i<IMAGE_H;i++){
+			weight_sum += mid_weight[i];
+			mid_weight_sum += mid_line[i]*mid_weight[i];
+		}
 	temp = (uint8)(mid_weight_sum/weight_sum);
 	if(!last_final_mid_line)
 		final_mid_line = temp;
@@ -417,6 +525,13 @@ void image_display_edge_line(const uint8 image[][IMAGE_W],uint16 display_width,u
 	}
 }
 
+
+void image_get_left_err(void){     //获取左边线与中线的偏差数组
+	for(int i = 0;i <= IMAGE_H-1;i++){
+		single_edge_err[i] = mid_line[i] - left_edge_line[i];
+	}
+}
+
 void image_core(uint16 display_width,uint16 display_height,uint8 mode){
 	get_image();
 	reference_point = 0; white_max_point = 0;white_min_point = 0;reference_col = 0;
@@ -425,8 +540,12 @@ void image_core(uint16 display_width,uint16 display_height,uint8 mode){
 	search_reference_col(user_image);
 	search_line(user_image);
 	
+//	image_get_left_err();
+	
 //	image_cross_analysis();
-	image_calculate_mid();
+	
+	image_circle_analysis();
+	image_calculate_mid(mid_mode);
 	image_calculate_prospect(user_image);
 	
 	if(mode)
