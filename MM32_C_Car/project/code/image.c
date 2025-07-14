@@ -26,7 +26,7 @@ uint8 mid_weight[IMAGE_H] = {           //各行中线权重
 	16,15,14,13,12,11,10,9 ,8 ,7 ,
 	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
-	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1  
 };
 uint8 single_edge_err[IMAGE_H] = {           //各行中线权重
 	11,11,12,13,13,14,15,15,16,17,
@@ -369,20 +369,59 @@ void image_cross_analysis(void){
 	}
 }
 
+uint8 image_find_circle_point(uint16 *edge_line,uint8 down_num,uint8 up_num){
+	uint8 temp_jump_point = 0;
+	temp_jump_point = down_num;
+	for(int i = 0;i <down_num-up_num;i++){
+		if(edge_line[down_num-i]<edge_line[down_num-i-1]&&
+			edge_line[down_num-i]<edge_line[down_num-i-2]&&
+			edge_line[down_num-i]<edge_line[down_num-i-3]&&
+//			edge_line[down_num-i]<edge_line[down_num-i-4]&&
+//			edge_line[down_num-i]<edge_line[down_num-i-5]&&
+			edge_line[down_num-i]<edge_line[down_num-i+1]&&
+			edge_line[down_num-i]<edge_line[down_num-i+2]&&
+			edge_line[down_num-i]<edge_line[down_num-i+3]
+//		&&
+//			edge_line[down_num-i]<edge_line[down_num-i+4]&&
+//			edge_line[down_num-i]<edge_line[down_num-i+5]
+		){
+			temp_jump_point = (uint8)(down_num-i);
+			
+			return temp_jump_point;
+		}
+	}
+	return 0;
+}
+
 
 void image_circle_analysis(void){
 	if(circle_flag == 0){           //识别环岛
 		mid_mode = 0;
-		for(int i = IMAGE_H-15;i>0;i--){
+		for(int i = IMAGE_H-2;i>0;i--){
+			if(func_abs(left_edge_line[i]-left_edge_line[i+1])>3)
+				return;
+		}
+		for(int i = IMAGE_H-40;i>0;i--){
 			if(left_edge_line[i]<3)
 				return;
 		}
 		uint8 start_point = 0,end_point = 0;
 		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 5,5,10,1);
 		if(start_point)
-			end_point = image_find_jump_point(right_edge_line,start_point-10,5,10,0);
+			end_point = image_find_circle_point(right_edge_line,start_point-10,10);
 		if(end_point){
-			if(start_point - end_point>70){
+			if(start_point - end_point>30){
+				circle_flag = 1;
+				circle_time = 2;     //开始计时
+				beep_flag = 1;
+			}
+		}
+		
+		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 80,5,10,0);
+		if(start_point)
+			end_point = image_find_circle_point(right_edge_line,IMAGE_H - 5,start_point-5);
+		if(end_point){
+			if(end_point- start_point>30){
 				circle_flag = 1;
 				circle_time = 0;     //开始计时
 				beep_flag = 1;
@@ -408,14 +447,17 @@ void image_circle_analysis(void){
 
 		}
 	}
-	else if (circle_flag == 3){      //入岛后沿左边线转弯
+	else if (circle_flag == 3){      //入岛后正常循线转弯
 		mid_mode = 0;
 //		if(final_mid_line < IMAGE_W/2+10){//当车想往左转时说明到达出口
 //			mid_mode = 2;
 //			circle_time = 0;
 //			circle_flag = 4;
 //		}
-		if(left_edge_line[IMAGE_H/2]<3 && left_edge_line[IMAGE_H/2-1]<3 &&left_edge_line[IMAGE_H/2]<3){//当车想往左转时说明到达出口
+		if(left_edge_line[IMAGE_H/2]<3 && left_edge_line[IMAGE_H/2-1]<3 &&left_edge_line[IMAGE_H/2+1]<3){//当车想往左转时说明到达出口
+//		uint8 start_point = 0,end_point = 0;
+//		start_point = image_find_jump_point(left_edge_line,IMAGE_H-5,5,10,0);
+//		if(start_point){
 			mid_mode = 2;
 			circle_time = 0;
 			circle_flag = 4;
@@ -424,7 +466,10 @@ void image_circle_analysis(void){
 		}
 	}
 	else if(circle_flag == 4){       //在出口处沿右边线走
-		mid_mode = 2;
+		mid_mode = 0;
+		for(int i = IMAGE_H-1;i>0;i--){
+			left_edge_line[i] = IMAGE_W/3;
+		}
 		if(circle_time >= CIRCLE_4_TIME){
 			circle_time = 0;
 			circle_flag = 5;

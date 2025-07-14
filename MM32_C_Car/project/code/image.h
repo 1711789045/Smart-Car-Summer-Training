@@ -16,8 +16,8 @@
 #define CONTRASTOFFSET      3          //搜线对比度偏移
 #define STOPROW            0           //搜线停止行
 #define SEARCHRANGE        10          //搜线半径
-#define CIRCLE_1_TIME      2          //环岛状态一计时时间，单位100ms
-#define CIRCLE_2_TIME      5          //环岛状态二计时时间，单位100ms
+#define CIRCLE_1_TIME      3        //环岛状态一计时时间，单位100ms
+#define CIRCLE_2_TIME      10         //环岛状态二计时时间，单位100ms
 #define CIRCLE_4_TIME      5           //环岛状态四计时时间，单位100ms
 #define CIRCLE_5_TIME      5           //环岛状态五计时时间，单位100ms
 

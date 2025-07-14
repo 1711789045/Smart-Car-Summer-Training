@@ -625,7 +625,7 @@ void NULL_FUN(){
 }
 
 float kp= 0.35,ki = 0,kd = 0.56;
-int speed=2000;
+int speed=1700;
 float angle = 0.0;
 uint16 test_d=20;
 uint32 test_e=32;
@@ -634,7 +634,7 @@ void UNIT_SET(){
 	//菜单单元调参参数初始化
     unit_param_set(&kp,TYPE_FLOAT ,0.01  ,1  ,3,NORMAL_PAR,"kp");
     unit_param_set(&ki,TYPE_FLOAT   ,0.01    ,1  ,3,NORMAL_PAR,"ki");
-    unit_param_set(&kd,TYPE_FLOAT,0.01  ,1  ,3,NORMAL_PAR,"kd");
+    unit_param_set(&kd,TYPE_FLOAT,0.001  ,1  ,3,NORMAL_PAR,"kd");
     unit_param_set(&speed,TYPE_INT,200    ,5 ,0,NORMAL_PAR,"speed");
     unit_param_set(&angle,TYPE_FLOAT,0.1    ,2 ,2,NORMAL_PAR,"angle");
 }

@@ -100,7 +100,11 @@ int main(void)
 		servo_control(final_mid_line);
 
 		speed = motor_lose_line_protect(speed,prospect);
-		motor_setspeed(speed,encoder_data_l,encoder_data_r);
+//		motor_setspeed(speed,encoder_data_l,encoder_data_r);
+		
+		motor_setpwm(MOTOR_L, speed);
+		motor_setpwm(MOTOR_R, speed);
+
 
 		ips200_show_int(96,160,encoder_data_l,4);
 		ips200_show_int(96,176,encoder_data_r,4);
