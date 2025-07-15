@@ -412,18 +412,19 @@ void image_circle_analysis(void){
 		if(end_point){
 			if(start_point - end_point>30){
 				circle_flag = 1;
-				circle_time = 2;     //开始计时
+				circle_time = 0;     //开始计时
 				beep_flag = 1;
 			}
 		}
-		
+
+		start_point = 0,end_point = 0;
 		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 80,5,10,0);
 		if(start_point)
 			end_point = image_find_circle_point(right_edge_line,IMAGE_H - 5,start_point-5);
 		if(end_point){
 			if(end_point- start_point>30){
 				circle_flag = 1;
-				circle_time = 0;     //开始计时
+				circle_time = 10;     //开始计时
 				beep_flag = 1;
 			}
 		}

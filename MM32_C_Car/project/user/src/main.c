@@ -47,8 +47,10 @@
 // 本例程是开源库移植用空工程
 
 // **************************** 代码区域 ****************************
-#define PIT                             (TIM6_PIT )                             // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
-#define PIT_PRIORITY                    (TIM6_IRQn)                             // 对应周期中断的中断编号 在 mm32f3277gx.h 头文件中查看 IRQn_Type 枚举体
+#define PIT6                             (TIM6_PIT )                             // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
+#define PIT6_PRIORITY                    (TIM6_IRQn)                             // 对应周期中断的中断编号 在 mm32f3277gx.h 头文件中查看 IRQn_Type 枚举体
+#define PIT7                             (TIM7_PIT )                             // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
+#define PIT7_PRIORITY                    (TIM7_IRQn)                             // 对应周期中断的中断编号 在 mm32f3277gx.h 头文件中查看 IRQn_Type 枚举体
 
 int16 encoder_data_l = 0;
 int16 encoder_data_r = 0;
@@ -73,8 +75,11 @@ int main(void)
 
 	beep_init();
 	 
-	pit_ms_init(PIT, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
-    interrupt_set_priority(PIT_PRIORITY, 0); 
+	pit_ms_init(PIT6, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
+    interrupt_set_priority(PIT6_PRIORITY, 0); 
+	pit_ms_init(PIT7, 10);                                                      // 初始化 PIT 为周期中断 10ms 周期
+    interrupt_set_priority(PIT7_PRIORITY, 0); 
+ 
     // 此处编写用户代码 例如外设初始化代码等
     
     // 此处编写用户代码 例如外设初始化代码等
@@ -97,14 +102,17 @@ int main(void)
 		image_core(188,120,0);
 				
 		servo_set_pid(kp,ki,kd);
-		servo_control(final_mid_line);
+		if(servo_flag){
+			servo_control(final_mid_line);
+		}
 
 		speed = motor_lose_line_protect(speed,prospect);
-//		motor_setspeed(speed,encoder_data_l,encoder_data_r);
-		
-		motor_setpwm(MOTOR_L, speed);
-		motor_setpwm(MOTOR_R, speed);
-
+		if(motor_flag){
+			motor_setspeed(speed,encoder_data_l,encoder_data_r);
+			
+//			motor_setpwm(MOTOR_L, speed);
+//			motor_setpwm(MOTOR_R, speed);
+		}
 
 		ips200_show_int(96,160,encoder_data_l,4);
 		ips200_show_int(96,176,encoder_data_r,4);
@@ -126,7 +134,7 @@ int main(void)
 // 返回参数     void
 // 使用示例     pit_handler();
 //-------------------------------------------------------------------------------------------------------------------
-void pit_handler (void)
+void pit6_handler (void)
 {
 	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
     encoder_data_r = 0-encoder_get_count(ENCODER_R);                          // 获取编码器计数
@@ -134,14 +142,18 @@ void pit_handler (void)
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
     encoder_clear_count(ENCODER_R);                                           // 清空编码器计数
 //	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
-	circle_time++;
 	beep_off();
-	if(beep_flag == 1){
+	if(beep_flag){
 		beep_on();
-		beep_flag = 0;
+		beep_flag -= 0.5;
 	}
 	
 }
 
+void pit7_handler (void)
+{
+	circle_time++;
 
+	
+}
 // **************************** 代码区域 ****************************

@@ -574,28 +574,21 @@ void menu_init()
 
 //更改夜间或白天模式
 static uint16 IPS200_BGCOLOR = RGB565_WHITE;
-void day_night(){
+void servo(){
 	if(IS_OK){
-		if(IPS200_BGCOLOR==RGB565_WHITE){
-		    IPS200_BGCOLOR = RGB565_BLACK;
-		    ips200_set_color(RGB565_WHITE,RGB565_BLACK);
-		    showstr(0,(SON_NUM+1)*16,"BLACK");
+		if(servo_flag == 0){
+		    servo_flag = 1;
+		    showstr(0,(SON_NUM+1)*16,"servo_on");
 		}
-		else if(IPS200_BGCOLOR==RGB565_BLACK){
-		    IPS200_BGCOLOR = RGB565_WHITE;
-            ips200_set_color(RGB565_BLACK,RGB565_WHITE);
-			showstr(0,(SON_NUM+1)*16,"WHITE");
+		else if(servo_flag == 1){
+		    servo_flag = 0;
+			showstr(0,(SON_NUM+1)*16,"servo_off");
 		}
 	}
 }
 
-void rand_color(){
-    if(IS_OK){
-        uint16 color;
-        color = rand()%(32768*2);
-        ips200_set_color(color,~color);
-        showstr(0,(SON_NUM+1)*16,"rand");
-    }
+void NULL_FUN(){
+    
 }
 
 void show_image(){
@@ -619,13 +612,18 @@ void show_image(){
 	}
 }
 
+uint8 motor_flag = 0;
+uint8 servo_flag = 0;
 //菜单空闲函数
-void NULL_FUN(){
-
+void start(){
+	if(IS_OK){
+        motor_flag = 1;
+		servo_flag = 1;
+    }
 }
 
 float kp= 0.35,ki = 0,kd = 0.56;
-int speed=1700;
+int speed=2000;
 float angle = 0.0;
 uint16 test_d=20;
 uint32 test_e=32;
@@ -635,14 +633,14 @@ void UNIT_SET(){
     unit_param_set(&kp,TYPE_FLOAT ,0.01  ,1  ,3,NORMAL_PAR,"kp");
     unit_param_set(&ki,TYPE_FLOAT   ,0.01    ,1  ,3,NORMAL_PAR,"ki");
     unit_param_set(&kd,TYPE_FLOAT,0.001  ,1  ,3,NORMAL_PAR,"kd");
-    unit_param_set(&speed,TYPE_INT,200    ,5 ,0,NORMAL_PAR,"speed");
+    unit_param_set(&speed,TYPE_INT,100    ,5 ,0,NORMAL_PAR,"speed");
     unit_param_set(&angle,TYPE_FLOAT,0.1    ,2 ,2,NORMAL_PAR,"angle");
 }
 
 void FUN_INIT(){
 	//菜单单元函数指针初始化
+	fun_init(start,"<<<start>>>");
+	fun_init(NULL_FUN	,"NULL_FUN");
 	fun_init(show_image	,"show_image");
-	fun_init(day_night	,"day_night");
-	fun_init(rand_color	,"rand_color");
-	fun_init(NULL_FUN	,"NULL_FUN2");
+	fun_init(servo	,"<servo>");
 }
