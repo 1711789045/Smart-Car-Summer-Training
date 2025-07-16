@@ -58,6 +58,7 @@ int16 encoder_data_r = 0;
 
 
 
+
 int main(void)
 {
     clock_init(SYSTEM_CLOCK_120M);                                              // 初始化芯片时钟 工作频率为 120MHz
@@ -74,6 +75,8 @@ int main(void)
 	servo_init();
 
 	beep_init();
+	
+	imu963ra_init();
 	 
 	pit_ms_init(PIT6, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
     interrupt_set_priority(PIT6_PRIORITY, 0); 
@@ -105,8 +108,13 @@ int main(void)
 		if(servo_flag){
 			servo_control(final_mid_line);
 		}
+		
+		motor_lose_line_protect();
+		
+		if(stop_flag)
+			motor_setspeed(0,encoder_data_l,encoder_data_r);
 
-		speed = motor_lose_line_protect(speed,prospect);
+		
 		if(motor_flag){
 			motor_setspeed(speed,encoder_data_l,encoder_data_r);
 			

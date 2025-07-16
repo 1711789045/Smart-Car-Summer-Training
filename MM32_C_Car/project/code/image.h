@@ -37,6 +37,11 @@ extern uint8 single_edge_err[IMAGE_H];
 extern uint8 circle_flag;                  //环岛标志位
 extern uint16 circle_time;                  
 extern uint8 mid_mode;                    //循线模式
+extern uint8 if_circle;                     //1为启用圆环，0为关闭圆环
+extern uint8 mid_weight_1[IMAGE_H];
+extern uint8 mid_weight_2[IMAGE_H];
+extern uint8 mid_weight[IMAGE_H];
+
 
 
 void get_image(void);

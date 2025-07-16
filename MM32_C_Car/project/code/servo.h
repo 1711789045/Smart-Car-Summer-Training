@@ -5,7 +5,7 @@
 #define SERVO_MOTOR_PWM             (TIM2_PWM_CH1_A15)                          // 定义主板上舵机对应引脚
 #define SERVO_MOTOR_FREQ            (50 )                                       // 定义主板上舵机频率  请务必注意范围 50-300
 
-#define SERVO_MOTOR_LIMIT               (14.5)
+#define SERVO_MOTOR_LIMIT               (14)
 #define SERVO_MOTOR_MID               (63)
 #define SERVO_MOTOR_L_MAX           (48.5)                                       // 定义主板上舵机活动范围 角度
 #define SERVO_MOTOR_R_MAX           (77.5)                                       // 定义主板上舵机活动范围 角度

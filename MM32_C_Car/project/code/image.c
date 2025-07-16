@@ -14,7 +14,7 @@ uint16 right_edge_line[IMAGE_H] = {0};      // 存储右边线
 uint8 user_image[IMAGE_H][IMAGE_W];  //存储图像
 
 uint8 mid_line[IMAGE_H] = {0};         //各行中线位置
-uint8 mid_weight[IMAGE_H] = {           //各行中线权重
+uint8 mid_weight_1[IMAGE_H] = {           //各行中线权重
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
@@ -28,6 +28,39 @@ uint8 mid_weight[IMAGE_H] = {           //各行中线权重
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1  
 };
+
+uint8 mid_weight_2[IMAGE_H] = {           //各行中线权重
+	
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	7 ,8 ,9 ,10,11,12,13,14,15,16,
+	17,18,19,20,20,20,20,19,18,17,
+	16,15,14,13,12,11,10,9 ,8 ,7 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
+};
+
+uint8 mid_weight[IMAGE_H] = {           //各行中线权重
+	
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	7 ,8 ,9 ,10,11,12,13,14,15,16,
+	17,18,19,20,20,20,20,19,18,17,
+	16,15,14,13,12,11,10,9 ,8 ,7 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
+};
+
 uint8 single_edge_err[IMAGE_H] = {           //各行中线权重
 	11,11,12,13,13,14,15,15,16,17,
 	17,18,19,19,20,20,21,22,23,23, 
@@ -49,6 +82,7 @@ uint8 cross_flag = 0;                    //十字标志位
 uint8 mid_mode = 0;                      //循线模式，0表示循两边线，1循左边线，2循右边线
 uint8 circle_flag = 0;
 uint16 circle_time = 0;
+uint8 if_circle = 1;                     //1为启用圆环，0为关闭圆环
 
 void get_image(void){
 	memcpy(user_image,mt9v03x_image,IMAGE_H*IMAGE_W);
@@ -590,7 +624,8 @@ void image_core(uint16 display_width,uint16 display_height,uint8 mode){
 	
 //	image_cross_analysis();
 	
-	image_circle_analysis();
+	if(if_circle)
+		image_circle_analysis();
 	image_calculate_mid(mid_mode);
 	image_calculate_prospect(user_image);
 	

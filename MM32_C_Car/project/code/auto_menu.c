@@ -2,6 +2,7 @@
 #include "auto_menu.h"
 #include "key.h"
 #include "image.h"
+#include "motor.h"
 
 //按键信号量及按键反馈信号量
 #ifdef  MENU_USE_RTT
@@ -587,6 +588,46 @@ void servo(){
 	}
 }
 
+void circle(){
+    if(IS_OK){
+		if(if_circle == 0){
+		    if_circle = 1;
+		    showstr(0,(SON_NUM+1)*16,"circle_on");
+		}
+		else if(if_circle == 1){
+		    if_circle = 0;
+			showstr(0,(SON_NUM+1)*16,"circle_off");
+		}
+	}
+}
+
+void store_1_2000(){
+	if(IS_OK){
+		speed = 2000;
+		kp = 0.35;
+		kd = 0.56;
+		acc_percent = 0;
+		for(int i = 0;i<IMAGE_H;i++){
+			mid_weight[i] = mid_weight_1[i];
+		}
+		showstr(0,(SON_NUM+1)*16,"2000 0.35 0.56 0 weight1");
+
+    }
+}
+void store_2_2500(){
+	if(IS_OK){
+		speed = 2500;
+		kp = 0.35;
+		kd = 0.56;
+		acc_percent = 0.05;
+		for(int i = 0;i<IMAGE_H;i++){
+			mid_weight[i] = mid_weight_2[i];
+		}
+		showstr(0,(SON_NUM+1)*16,"2500 0.35 0.56 0.05 weight2");
+
+    }
+}
+
 void NULL_FUN(){
     
 }
@@ -617,6 +658,7 @@ uint8 servo_flag = 0;
 //菜单空闲函数
 void start(){
 	if(IS_OK){
+		stop_flag = 0;
         motor_flag = 1;
 		servo_flag = 1;
     }
@@ -624,17 +666,17 @@ void start(){
 
 float kp= 0.35,ki = 0,kd = 0.56;
 int speed=2000;
-float angle = 0.0;
+float acc_percent = 0.05;
 uint16 test_d=20;
 uint32 test_e=32;
 
 void UNIT_SET(){
 	//菜单单元调参参数初始化
-    unit_param_set(&kp,TYPE_FLOAT ,0.01  ,1  ,3,NORMAL_PAR,"kp");
+    unit_param_set(&kp,TYPE_FLOAT ,0.001  ,1  ,3,NORMAL_PAR,"kp");
     unit_param_set(&ki,TYPE_FLOAT   ,0.01    ,1  ,3,NORMAL_PAR,"ki");
     unit_param_set(&kd,TYPE_FLOAT,0.001  ,1  ,3,NORMAL_PAR,"kd");
     unit_param_set(&speed,TYPE_INT,100    ,5 ,0,NORMAL_PAR,"speed");
-    unit_param_set(&angle,TYPE_FLOAT,0.1    ,2 ,2,NORMAL_PAR,"angle");
+    unit_param_set(&acc_percent,TYPE_FLOAT,0.01    ,1 ,2,NORMAL_PAR,"acc_per");
 }
 
 void FUN_INIT(){
@@ -643,4 +685,9 @@ void FUN_INIT(){
 	fun_init(NULL_FUN	,"NULL_FUN");
 	fun_init(show_image	,"show_image");
 	fun_init(servo	,"<servo>");
+	fun_init(circle,"<circle>");
+	fun_init(store_1_2000,"<speed2000>");
+	fun_init(store_2_2500,"<speed2500>");
+
+
 }

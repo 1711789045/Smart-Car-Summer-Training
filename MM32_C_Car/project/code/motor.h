@@ -11,12 +11,13 @@
 #define MOTOR_L_DIR             (A2)
 #define MOTOR_R_DIR             (A0)
 
-#define SPEED_LIMIT             3000           //速度上限
+#define SPEED_LIMIT             4000           //速度上限
 
+extern uint8 stop_flag;
 
 void motor_init(void);
 void motor_set_pid(float kp,float ki,float kd);
 void motor_setpwm(uint8 motor,int16 speed);
 void motor_setspeed(int16 target,float current_l,float current_r);
-int16 motor_lose_line_protect(int16 speed,uint8 prospect);
+void motor_lose_line_protect(void);
 #endif

@@ -1,9 +1,11 @@
 #include "zf_common_headfile.h"
 #include  "motor.h"
 #include "pid.h"
-
+#include "auto_menu.h"
+#include "image.h"
 //占空比最大值是10000
 
+uint8 stop_flag = 0;
 
 static PID_INCREMENT_TypeDef pid_left = {0};
 static PID_INCREMENT_TypeDef pid_right = {0};
@@ -74,9 +76,10 @@ void motor_setspeed(int16 target, float current_l, float current_r) {
     motor_setpwm(MOTOR_R, speed_r);
 }
 
-int16 motor_lose_line_protect(int16 speed,uint8 prospect){
+void motor_lose_line_protect(void){
 	if(prospect<5){
-		return 0;
+		stop_flag = 1;
+		servo_flag = 0;
+		motor_flag = 0;
 	}
-	return speed;
 }
