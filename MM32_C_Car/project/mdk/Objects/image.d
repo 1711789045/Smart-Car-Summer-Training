@@ -88,4 +88,4 @@
   ..\..\libraries\zf_device\zf_device_wireless_uart.h \
   ..\..\libraries\components\fatfs\source\ffconf.h \
   ..\..\libraries\components\fatfs\source\ff.h ..\code\image.h \
-  ..\code\beep.h
+  ..\code\beep.h ..\code\auto_menu.h ..\code\motor.h

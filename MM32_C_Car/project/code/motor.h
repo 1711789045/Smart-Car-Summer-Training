@@ -18,6 +18,6 @@ extern uint8 stop_flag;
 void motor_init(void);
 void motor_set_pid(float kp,float ki,float kd);
 void motor_setpwm(uint8 motor,int16 speed);
-void motor_setspeed(int16 target,float current_l,float current_r);
+void motor_setspeed(int16 target, float current_l, float current_r,uint8 differential_mode) ;
 void motor_lose_line_protect(void);
 #endif

@@ -17,5 +17,5 @@ typedef struct {
 float pid_increment(PID_INCREMENT_TypeDef *pid, float target, float current, 
                     float limit, float kp, float ki, float kd);
 float pid_positional(PID_POSITIONAL_TypeDef *pid, float target, float current, 
-                     float limit, float kp, float ki, float kd) ;
+                     float limit, float kp, float ki, float kd1,float kd2) ;
 #endif

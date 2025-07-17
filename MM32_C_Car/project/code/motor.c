@@ -62,13 +62,21 @@ void motor_setpwm(uint8 motor,int16 speed){
 	}
 }
 
-void motor_setspeed(int16 target, float current_l, float current_r) {
-    int16 speed_l = pid_increment(&pid_left, target, current_l, 
+void motor_setspeed(int16 target, float current_l, float current_r,uint8 differential_mode) {
+	int16 speed_l = 0,speed_r = 0;
+		speed_l = pid_increment(&pid_left, target, current_l, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
     
-    int16 speed_r = pid_increment(&pid_right, target, current_r, 
+		speed_r = pid_increment(&pid_right, target, current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
-    
+	if(differential_mode){
+		if(final_mid_line - IMAGE_W/2 >45)
+			speed_l = pid_increment(&pid_left, target- 500, current_l, 
+                                 SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
+		if(final_mid_line - IMAGE_W/2 <-45)
+			speed_r = pid_increment(&pid_left, target- 500, current_l, 
+                                 SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
+	}
 //	ips200_show_int(0,208,speed_l,4);
 //	ips200_show_int(0,224,speed_r,4);
 	

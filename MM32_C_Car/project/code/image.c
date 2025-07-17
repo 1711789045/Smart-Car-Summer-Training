@@ -1,6 +1,8 @@
 #include "zf_common_headfile.h"
 #include "image.h"
 #include "beep.h"
+#include "auto_menu.h"
+#include "motor.h"
 
 uint8 reference_point = 0;
 uint8 white_max_point = 0;             //动态白点最大值
@@ -612,6 +614,28 @@ void image_get_left_err(void){     //获取左边线与中线的偏差数组
 	}
 }
 
+void stop_analysis(const uint8 image[][IMAGE_W]){
+	int16 temp1 = 0,temp2 = 0,temp3 = 0;
+	uint16 stop_count = 0;
+	for(int row = STOP_ANALYSE_LINE-1;row<=STOP_ANALYSE_LINE+1;row++){
+		for(int col = 0;col<IMAGE_W-CONTRASTOFFSET;col+=CONTRASTOFFSET){
+			temp1 = image[row][col];
+			temp2 = image[row][col+CONTRASTOFFSET];
+			temp3 = (temp1 - temp2)*200/(temp1 + temp2);
+			if(temp3 >reference_contrast_ratio ){   //计算对比度
+				stop_count++;
+			}
+		}
+	}
+//	ips200_show_int(96,288,stop_count,4);
+
+	if(stop_count> 35){
+		stop_flag = 1;
+		beep_flag = 1;
+	}
+}
+
+
 void image_core(uint16 display_width,uint16 display_height,uint8 mode){
 	get_image();
 	reference_point = 0; white_max_point = 0;white_min_point = 0;reference_col = 0;
@@ -623,6 +647,8 @@ void image_core(uint16 display_width,uint16 display_height,uint8 mode){
 //	image_get_left_err();
 	
 //	image_cross_analysis();
+	
+	stop_analysis(user_image);
 	
 	if(if_circle)
 		image_circle_analysis();

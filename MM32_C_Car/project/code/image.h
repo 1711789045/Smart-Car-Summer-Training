@@ -20,7 +20,8 @@
 #define CIRCLE_2_TIME      100         //环岛状态二计时时间，单位10ms
 #define CIRCLE_4_TIME      50           //环岛状态四计时时间，单位10ms
 #define CIRCLE_5_TIME      50           //环岛状态五计时时间，单位10ms
-
+#define STOP_ANALYSE_LINE  (IMAGE_H-40)          //斑马线检测行
+#define STOP_THRESHOLD    30			 //斑马线跳变点数量阈值
 
 extern uint8 reference_point;
 extern uint8 white_max_point;          //动态白点最大值

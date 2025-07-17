@@ -65,24 +65,24 @@ float pid_increment(PID_INCREMENT_TypeDef *pid, float target, float current,
 //}
 
 float pid_positional(PID_POSITIONAL_TypeDef *pid, float target, float current, 
-                     float limit, float kp, float ki, float kd) {
+                     float limit, float kp, float ki, float kd1,float kd2) {
     // 计算当前误差
     float error = target - current;
 	pid->error_sum += error;
 	
     float d_error1 = error-pid->last_error;
-	float d_error2 = (imu963ra_acc_transition(imu963ra_acc_z)-1.01)*10;
+	float d_error2 = -(imu963ra_gyro_z)*0.01;
 
 	
 //	ips200_show_float(0,288,error-pid->last_error,2,2);
-//	ips200_show_float(96,288,d_error,3,3);
+	ips200_show_float(96,288,d_error2,3,3);
 //	printf("%f\n",d_error);
 
     
     // PID三项叠加计算输出
     float p_term = kp * error;
     float i_term = ki * pid->error_sum;
-    float d_term = kd * (d_error1*(1.0-acc_percent)+d_error2*acc_percent);
+    float d_term = kd1 * d_error1+kd2*d_error2;
     pid->output = p_term + i_term + d_term;
     
 

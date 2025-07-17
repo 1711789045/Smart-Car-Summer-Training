@@ -13,7 +13,7 @@
 
 void servo_init(void);
 void servo_setangle(float angle);
-void servo_set_pid(float kp,float ki,float kd);
+void servo_set_pid(float kp,float ki,float kd1,float kd2);
 void servo_control(uint8 mid_line);
 
 

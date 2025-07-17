@@ -104,19 +104,22 @@ int main(void)
 		show_process(NULL);
 		image_core(188,120,0);
 				
-		servo_set_pid(kp,ki,kd);
-		if(servo_flag){
+		servo_set_pid(kp,ki,kd1,kd2);
+		if(servo_flag ){
 			servo_control(final_mid_line);
+		}
+		else{
+			servo_setangle(0);
 		}
 		
 		motor_lose_line_protect();
 		
 		if(stop_flag)
-			motor_setspeed(0,encoder_data_l,encoder_data_r);
+			motor_setspeed(0,encoder_data_l,encoder_data_r,0);
 
 		
-		if(motor_flag){
-			motor_setspeed(speed,encoder_data_l,encoder_data_r);
+		if(motor_flag && !stop_flag){
+			motor_setspeed(speed,encoder_data_l,encoder_data_r,0);
 			
 //			motor_setpwm(MOTOR_L, speed);
 //			motor_setpwm(MOTOR_R, speed);
