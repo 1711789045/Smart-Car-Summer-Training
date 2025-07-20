@@ -16,10 +16,10 @@
 #define CONTRASTOFFSET      3          //搜线对比度偏移
 #define STOPROW            0           //搜线停止行
 #define SEARCHRANGE        10          //搜线半径
-#define CIRCLE_1_TIME      30        //环岛状态一计时时间，单位10ms
-#define CIRCLE_2_TIME      100         //环岛状态二计时时间，单位10ms
-#define CIRCLE_4_TIME      50           //环岛状态四计时时间，单位10ms
-#define CIRCLE_5_TIME      50           //环岛状态五计时时间，单位10ms
+#define CIRCLE_1_TIME      15        //环岛状态一计时时间，单位10ms
+#define CIRCLE_2_TIME      50         //环岛状态二计时时间，单位10ms
+#define CIRCLE_4_TIME      25           //环岛状态四计时时间，单位10ms
+#define CIRCLE_5_TIME      25           //环岛状态五计时时间，单位10ms
 #define STOP_ANALYSE_LINE  (IMAGE_H-40)          //斑马线检测行
 #define STOP_THRESHOLD    30			 //斑马线跳变点数量阈值
 
@@ -41,6 +41,8 @@ extern uint8 mid_mode;                    //循线模式
 extern uint8 if_circle;                     //1为启用圆环，0为关闭圆环
 extern uint8 mid_weight_1[IMAGE_H];
 extern uint8 mid_weight_2[IMAGE_H];
+extern uint8 mid_weight_3[IMAGE_H];
+
 extern uint8 mid_weight[IMAGE_H];
 
 

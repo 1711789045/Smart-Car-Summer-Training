@@ -54,7 +54,7 @@
 
 int16 encoder_data_l = 0;
 int16 encoder_data_r = 0;
-
+uint8 servo_f = 0,motor_f = 0;
 
 
 
@@ -77,10 +77,12 @@ int main(void)
 	beep_init();
 	
 	imu963ra_init();
+	
+	wireless_uart_init();
 	 
 	pit_ms_init(PIT6, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
     interrupt_set_priority(PIT6_PRIORITY, 0); 
-	pit_ms_init(PIT7, 10);                                                      // 初始化 PIT 为周期中断 10ms 周期
+	pit_ms_init(PIT7, 20);                                                      // 初始化 PIT 为周期中断 10ms 周期
     interrupt_set_priority(PIT7_PRIORITY, 0); 
  
     // 此处编写用户代码 例如外设初始化代码等
@@ -105,25 +107,31 @@ int main(void)
 		image_core(188,120,0);
 				
 		servo_set_pid(kp,ki,kd1,kd2);
-		if(servo_flag ){
-			servo_control(final_mid_line);
+//		motor_set_pid(kp,ki,kd1);
+		
+		if(servo_f){
+			if(servo_flag ){
+				servo_control(final_mid_line);
+			}
+			else{
+				servo_setangle(0);
+			}
+			servo_f = 0;
 		}
-		else{
-			servo_setangle(0);
-		}
 		
-		motor_lose_line_protect();
 		
-		if(stop_flag)
-			motor_setspeed(0,encoder_data_l,encoder_data_r,0);
-
-		
-		if(motor_flag && !stop_flag){
-			motor_setspeed(speed,encoder_data_l,encoder_data_r,0);
+		if(motor_f){
+			motor_lose_line_protect();
 			
-//			motor_setpwm(MOTOR_L, speed);
-//			motor_setpwm(MOTOR_R, speed);
+			if(stop_flag)
+				motor_setspeed(0,encoder_data_l,encoder_data_r,0);
+			if(motor_flag && !stop_flag){
+				motor_setspeed(speed,encoder_data_l,encoder_data_r,1);
+				
+			}
+			motor_f = 0;
 		}
+		
 
 		ips200_show_int(96,160,encoder_data_l,4);
 		ips200_show_int(96,176,encoder_data_r,4);
@@ -131,11 +139,13 @@ int main(void)
 		ips200_show_int(96,208,circle_flag,4);
 		ips200_show_int(200,208,mid_mode,4);
 
-
-		
+		wireless_uart_send_byte(encoder_data_l);
+		wireless_uart_send_string("\n");
+		wireless_uart_send_byte(encoder_data_r);
+		wireless_uart_send_string("\n");
 		
         // 此处编写需要循环执行的代码
-		system_delay_ms(20);
+		system_delay_ms(5);
     }
 }
 
@@ -146,13 +156,13 @@ int main(void)
 // 使用示例     pit_handler();
 //-------------------------------------------------------------------------------------------------------------------
 void pit6_handler (void)
-{
+{           
 	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
     encoder_data_r = 0-encoder_get_count(ENCODER_R);                          // 获取编码器计数
 	
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
-    encoder_clear_count(ENCODER_R);                                           // 清空编码器计数
-//	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
+    encoder_clear_count(ENCODER_R);                               // 清空编码器计数
+	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
 	beep_off();
 	if(beep_flag){
 		beep_on();
@@ -163,6 +173,9 @@ void pit6_handler (void)
 
 void pit7_handler (void)
 {
+	servo_f = 1;
+	motor_f = 1;
+	
 	circle_time++;
 
 	

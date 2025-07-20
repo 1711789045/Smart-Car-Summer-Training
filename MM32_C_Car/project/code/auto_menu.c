@@ -604,26 +604,44 @@ void circle(){
 void store_1_2000(){
 	if(IS_OK){
 		speed = 2000;
-		kp = 0.575;
-		kd1 = 0;
-		kd2 = 0.475;
+		kp = 0.350;
+		kd1 = 0.60;
+		kd2 = 0;
+		if_circle = 1;
 		for(int i = 0;i<IMAGE_H;i++){
 			mid_weight[i] = mid_weight_1[i];
 		}
-		showstr(0,(SON_NUM+1)*16,"2000 0.575 0 0.475 weight1");
+		showstr(0,(SON_NUM+1)*16,"2000 0.350 0.60 0 weight1");
 
     }
 }
 void store_2_2500(){
 	if(IS_OK){
 		speed = 2500;
-		kp = 0.35;
-		kd1 = 0.56;
-		kd2 = 0;
+		kp = 0.660;
+		kd1 = 0;
+		kd2 = 0.50;
+		if_circle = 0;
+
 		for(int i = 0;i<IMAGE_H;i++){
 			mid_weight[i] = mid_weight_2[i];
 		}
-		showstr(0,(SON_NUM+1)*16,"2500 0.35 0.56 0 weight2");
+		showstr(0,(SON_NUM+1)*16,"2500 0.660 0 0.50 weight2");
+
+    }
+}
+
+void store_3_3000(){
+	if(IS_OK){
+		speed = 3000;
+		kp = 0.380;
+		kd1 = 0.550;
+		kd2 = 0.10;
+		if_circle = 0;
+		for(int i = 0;i<IMAGE_H;i++){
+			mid_weight[i] = mid_weight_3[i];
+		}
+		showstr(0,(SON_NUM+1)*16,"3000 0.380 0.550 0.10 weight3");
 
     }
 }
@@ -672,9 +690,9 @@ uint32 test_e=32;
 
 void UNIT_SET(){
 	//菜单单元调参参数初始化
-    unit_param_set(&kp,TYPE_FLOAT ,0.001  ,1  ,3,NORMAL_PAR,"kp");
+    unit_param_set(&kp,TYPE_FLOAT ,0.01  ,1  ,3,NORMAL_PAR,"kp");
     unit_param_set(&ki,TYPE_FLOAT   ,0.01    ,1  ,3,NORMAL_PAR,"ki");
-    unit_param_set(&kd1,TYPE_FLOAT,0.001  ,1  ,3,NORMAL_PAR,"kd1");
+    unit_param_set(&kd1,TYPE_FLOAT,0.01  ,1  ,3,NORMAL_PAR,"kd1");
 	unit_param_set(&kd2,TYPE_FLOAT,0.001  ,1  ,3,NORMAL_PAR,"kd2");
     unit_param_set(&speed,TYPE_INT,100    ,5 ,0,NORMAL_PAR,"speed");
 }
@@ -688,6 +706,7 @@ void FUN_INIT(){
 	fun_init(circle,"<circle>");
 	fun_init(store_1_2000,"<speed2000>");
 	fun_init(store_2_2500,"<speed2500>");
+	fun_init(store_3_3000,"<speed3000>");
 
 
 }

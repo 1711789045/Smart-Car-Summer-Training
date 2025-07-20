@@ -47,6 +47,24 @@ uint8 mid_weight_2[IMAGE_H] = {           //各行中线权重
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
 };
 
+uint8 mid_weight_3[IMAGE_H] = {           //各行中线权重
+	
+	
+	
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	7 ,8 ,9 ,10,11,12,13,14,15,16,
+	17,18,19,20,20,20,20,19,18,17,
+	16,15,14,13,12,11,10,9 ,8 ,7 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1  
+};
+
 uint8 mid_weight[IMAGE_H] = {           //各行中线权重
 	
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
@@ -151,6 +169,8 @@ void search_reference_col(const uint8 image[][IMAGE_W]){
 		if(remote_distance[reference_col] > remote_distance[col])
 			reference_col = col;
 	}
+	
+	
 	for(row = 0;row < IMAGE_H;row++){
 		reference_line[row] =reference_col;
 	}
@@ -304,6 +324,88 @@ uint8 image_find_jump_point(uint16 *edge_line,uint8 down_num,uint8 up_num,uint8 
 	return 0;
 }
 
+uint8 image_find_left_jump_point(uint8 down_num,uint8 up_num,uint8 model){
+	//down_num 是下端起始点 up_num 是上端终止点,model为1时从下到上 为0时从上到下
+	uint8 temp_jump_point = 0;
+	uint8 temp_data;
+	
+	if(model){
+		temp_jump_point = down_num;
+		for(int i = 0;i <down_num-up_num;i++){
+			if(
+				left_edge_line[down_num-i]-left_edge_line[down_num-i-5]>=8&&
+				left_edge_line[down_num-i]-left_edge_line[down_num-i-6]>=8&&
+				left_edge_line[down_num-i]-left_edge_line[down_num-i-7]>=8
+//			&&
+//				func_abs(left_edge_line[down_num-i]-left_edge_line[down_num-i+1])<=7&&
+//				func_abs(left_edge_line[down_num-i]-left_edge_line[down_num-i+2])<=7&&
+//				func_abs(left_edge_line[down_num-i]-left_edge_line[down_num-i+3])<=7
+			){
+				temp_jump_point = (uint8)(down_num-i)+3;
+				return temp_jump_point;
+			}
+		}
+	}
+	else{
+		temp_jump_point = up_num;
+		for(int i = 0;i <down_num-up_num;i++){
+			if(
+				left_edge_line[up_num+i]-left_edge_line[up_num+i+5]>=8&&
+				left_edge_line[up_num+i]-left_edge_line[up_num+i+6]>=8&&
+				left_edge_line[up_num+i]-left_edge_line[up_num+i+7]>=8
+//			&&
+//				func_abs(left_edge_line[up_num+i]-left_edge_line[up_num+i+1])<=7&&
+//				func_abs(left_edge_line[up_num+i]-left_edge_line[up_num+i+2])<=7&&
+//				func_abs(left_edge_line[up_num+i]-left_edge_line[up_num+i+3])<=7
+			){
+				temp_jump_point = (uint8)(up_num+i)-3;
+				return temp_jump_point;
+			}
+		}
+	}
+	return 0;
+}
+
+uint8 image_find_right_jump_point(uint8 down_num,uint8 up_num,uint8 model){
+	//down_num 是下端起始点 up_num 是上端终止点,model为1时从下到上 为0时从上到下
+	uint8 temp_jump_point = 0;
+	uint8 temp_data;
+	
+	if(model){
+		temp_jump_point = down_num;
+		for(int i = 0;i <down_num-up_num;i++){
+			if(
+				right_edge_line[down_num-i]-right_edge_line[down_num-i-2]<=-8&&
+				right_edge_line[down_num-i]-right_edge_line[down_num-i-3]<=-8&&
+				right_edge_line[down_num-i]-right_edge_line[down_num-i-4]<=-8&&
+				func_abs(right_edge_line[down_num-i]-right_edge_line[down_num-i+1])<=7&&
+				func_abs(right_edge_line[down_num-i]-right_edge_line[down_num-i+2])<=7&&
+				func_abs(right_edge_line[down_num-i]-right_edge_line[down_num-i+3])<=7
+			){
+				temp_jump_point = (uint8)(down_num-i)+3;
+				return temp_jump_point;
+			}
+		}
+	}
+	else{
+		temp_jump_point = up_num;
+		for(int i = 0;i <down_num-up_num;i++){
+			if(
+				right_edge_line[up_num+i]-right_edge_line[up_num+i+2]<=-8&&
+				right_edge_line[up_num+i]-right_edge_line[up_num+i+3]<=-8&&
+				right_edge_line[up_num+i]-right_edge_line[up_num+i+4]<=-8&&
+				func_abs(right_edge_line[up_num+i]-right_edge_line[up_num+i+1])<=7&&
+				func_abs(right_edge_line[up_num+i]-right_edge_line[up_num+i+2])<=7&&
+				func_abs(right_edge_line[up_num+i]-right_edge_line[up_num+i+3])<=7
+			){
+				temp_jump_point = (uint8)(up_num+i)-3;
+				return temp_jump_point;
+			}
+		}
+	}
+	return 0;
+}
+
 void image_connect_point(uint16 *array_value, uint8 num0, uint8 num1)
 {
     float point_1 = (float)array_value[num0];
@@ -328,71 +430,37 @@ void image_cross_analysis(void){
 	}
 	
 	if(cross_flag == 1){       //大片白色
-		start_point = image_find_jump_point(left_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
-		if(start_point>=10)
-			end_point = image_find_jump_point(left_edge_line,start_point-10,IMAGE_H/4,5,0);
-		if(start_point && end_point){
-			cross_flag = 2;
+		start_point = 0;
+		end_point = 0;
+		start_point = image_find_left_jump_point(IMAGE_H - 5,IMAGE_H/4,0);
+		if(start_point){
+			end_point = image_find_left_jump_point(IMAGE_H - 5,start_point,1);
+			if(end_point){
+				image_connect_point(left_edge_line,end_point,start_point);
+			}
+			else{
+				end_point = IMAGE_H-5;
+				left_edge_line[end_point] = 5;
+				image_connect_point(left_edge_line,end_point,start_point);
+			}
 		}
-		
-		
 		ips200_show_int(96,224,start_point,4);
 		ips200_show_int(128,224,end_point,4);
 		
-		
 		start_point = 0;
 		end_point = 0;
-		
-		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
-		if(start_point>=10)
-			end_point = image_find_jump_point(right_edge_line,start_point-10,IMAGE_H/4,5,0);
-		if(start_point && end_point){       //已经搜到两个点
-			cross_flag = 2;
+		start_point = image_find_right_jump_point(IMAGE_H - 5,IMAGE_H/4,0);
+		if(start_point){
+			end_point = image_find_right_jump_point(IMAGE_H - 5,start_point,1);
+			if(end_point){
+				image_connect_point(right_edge_line,end_point,start_point);
+			}
+			else{
+				end_point = IMAGE_H-5;
+				right_edge_line[end_point] = 5;
+				image_connect_point(right_edge_line,end_point,start_point);
+			}
 		}
-		
-		ips200_show_int(96,240,start_point,4);
-		ips200_show_int(128,240,end_point,4);
-
-		if(track_width < (IMAGE_W * (IMAGE_H * 1 / 5))){
-			cross_flag = 0;
-		}
-	}
-	if(cross_flag == 2){       //进十字
-		start_point = image_find_jump_point(left_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
-		if(start_point>=10)
-			end_point = image_find_jump_point(left_edge_line,start_point-10,IMAGE_H/4,5,0);
-		
-		if(start_point && !end_point){     //只搜到一个点
-			end_point = start_point-10;
-			start_point = IMAGE_H-5;
-		}
-		else{
-			start_point=start_point+10;
-			end_point=end_point-10;
-		}
-		image_connect_point(left_edge_line,start_point,end_point);
-		ips200_show_int(96,224,start_point,4);
-		ips200_show_int(128,224,end_point,4);
-		
-		
-		start_point = 0;
-		end_point = 0;
-		
-		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
-		if(start_point>=10)
-			end_point = image_find_jump_point(right_edge_line,start_point-10,IMAGE_H/4,5,0);
-		
-
-		
-		if(start_point && !end_point){     //只搜到一个点
-			end_point = start_point-10;
-			start_point = IMAGE_H-5;
-		}
-		else{
-			start_point=start_point+10;
-			end_point=end_point-10;
-		}
-		image_connect_point(right_edge_line,start_point,end_point);
 		ips200_show_int(96,240,start_point,4);
 		ips200_show_int(128,240,end_point,4);
 
@@ -400,7 +468,81 @@ void image_cross_analysis(void){
 		if(track_width < (IMAGE_W * (IMAGE_H * 1 / 5))){
 			cross_flag = 0;
 		}
-		ips200_show_int(96,256,cross_flag,4);
+		
+		
+//		start_point = image_find_jump_point(left_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
+//		if(start_point>=10)
+//			end_point = image_find_jump_point(left_edge_line,start_point-10,IMAGE_H/4,5,0);
+//		if(start_point && end_point){
+//			cross_flag = 2;
+//		}
+//		
+//		
+//		ips200_show_int(96,224,start_point,4);
+//		ips200_show_int(128,224,end_point,4);
+//		
+//		
+//		start_point = 0;
+//		end_point = 0;
+//		
+//		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
+//		if(start_point>=10)
+//			end_point = image_find_jump_point(right_edge_line,start_point-10,IMAGE_H/4,5,0);
+//		if(start_point && end_point){       //已经搜到两个点
+//			cross_flag = 2;
+//		}
+//		
+//		ips200_show_int(96,240,start_point,4);
+//		ips200_show_int(128,240,end_point,4);
+
+//		if(track_width < (IMAGE_W * (IMAGE_H * 1 / 5))){
+//			cross_flag = 0;
+//		}
+//	}
+//	if(cross_flag == 2){       //进十字
+//		start_point = image_find_jump_point(left_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
+//		if(start_point>=10)
+//			end_point = image_find_jump_point(left_edge_line,start_point-10,IMAGE_H/4,5,0);
+//		
+//		if(start_point && !end_point){     //只搜到一个点
+//			end_point = start_point-10;
+//			start_point = IMAGE_H-5;
+//		}
+//		else{
+//			start_point=start_point+10;
+//			end_point=end_point-10;
+//		}
+//		image_connect_point(left_edge_line,start_point,end_point);
+//		ips200_show_int(96,224,start_point,4);
+//		ips200_show_int(128,224,end_point,4);
+//		
+//		
+//		start_point = 0;
+//		end_point = 0;
+//		
+//		start_point = image_find_jump_point(right_edge_line,IMAGE_H - 5,IMAGE_H/4,5,1);
+//		if(start_point>=10)
+//			end_point = image_find_jump_point(right_edge_line,start_point-10,IMAGE_H/4,5,0);
+//		
+
+//		
+//		if(start_point && !end_point){     //只搜到一个点
+//			end_point = start_point-10;
+//			start_point = IMAGE_H-5;
+//		}
+//		else{
+//			start_point=start_point+10;
+//			end_point=end_point-10;
+//		}
+//		image_connect_point(right_edge_line,start_point,end_point);
+//		ips200_show_int(96,240,start_point,4);
+//		ips200_show_int(128,240,end_point,4);
+
+//		
+//		if(track_width < (IMAGE_W * (IMAGE_H * 1 / 5))){
+//			cross_flag = 0;
+//		}
+//		ips200_show_int(96,256,cross_flag,4);
 
 	}
 }
@@ -460,7 +602,7 @@ void image_circle_analysis(void){
 		if(end_point){
 			if(end_point- start_point>30){
 				circle_flag = 1;
-				circle_time = 10;     //开始计时
+				circle_time = 5;     //开始计时
 				beep_flag = 1;
 			}
 		}
