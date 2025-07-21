@@ -607,6 +607,7 @@ void store_1_2000(){
 		kp = 0.350;
 		kd1 = 0.60;
 		kd2 = 0;
+		differential_mode = 0;
 		if_circle = 1;
 		for(int i = 0;i<IMAGE_H;i++){
 			mid_weight[i] = mid_weight_1[i];
@@ -621,6 +622,7 @@ void store_2_2500(){
 		kp = 0.660;
 		kd1 = 0;
 		kd2 = 0.50;
+		differential_mode = 0;
 		if_circle = 0;
 
 		for(int i = 0;i<IMAGE_H;i++){
@@ -634,9 +636,10 @@ void store_2_2500(){
 void store_3_3000(){
 	if(IS_OK){
 		speed = 3000;
-		kp = 0.380;
-		kd1 = 0.550;
-		kd2 = 0.10;
+		kp = 0.8;
+		kd1 = 0;
+		kd2 = 0.505;
+		differential_mode = 1;
 		if_circle = 0;
 		for(int i = 0;i<IMAGE_H;i++){
 			mid_weight[i] = mid_weight_3[i];

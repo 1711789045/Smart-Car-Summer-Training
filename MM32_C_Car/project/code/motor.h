@@ -14,6 +14,7 @@
 #define SPEED_LIMIT             4000           //速度上限
 
 extern uint8 stop_flag;
+extern uint8 differential_mode;
 
 void motor_init(void);
 void motor_set_pid(float kp,float ki,float kd);

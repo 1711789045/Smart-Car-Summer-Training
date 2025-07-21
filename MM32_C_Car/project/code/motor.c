@@ -11,6 +11,7 @@ static PID_INCREMENT_TypeDef pid_left = {0};
 static PID_INCREMENT_TypeDef pid_right = {0};
 
 float motor_pid_kp = 0.6,motor_pid_ki = 0.060,motor_pid_kd = 0;
+uint8 differential_mode = 0;
 
 void motor_init(void){
 	// 初始化pwm通道2和4
@@ -72,17 +73,17 @@ void motor_setspeed(int16 target, float current_l, float current_r,uint8 differe
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 	}
 	if(differential_mode){
-		if(final_mid_line - IMAGE_W/2 >35)
-			speed_l = pid_increment(&pid_left, target- 300, current_l, 
+		if(final_mid_line - IMAGE_W/2 >20)
+			speed_r = pid_increment(&pid_right,target- 500, current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 		else	
-			speed_l = pid_increment(&pid_left, target, current_l, 
+			speed_r = pid_increment(&pid_right, target, current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
-		if(final_mid_line - IMAGE_W/2 <-35)
-			speed_r = pid_increment(&pid_left, target- 300, current_l, 
+		if(final_mid_line - IMAGE_W/2 <-20)
+			speed_l = pid_increment(&pid_left, target- 500, current_l, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 		else
-			speed_r = pid_increment(&pid_right, target, current_r, 
+			speed_l = pid_increment(&pid_left, target, current_l, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 	}
 //	ips200_show_int(0,208,speed_l,4);

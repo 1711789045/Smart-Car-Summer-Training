@@ -40,7 +40,6 @@ void servo_control(uint8 mid_line){
 	float err = mid_line-MT9V03X_W/2.0+2;
 	float k = (exp(-fabs(err))-1)/(exp(-fabs(err))+1);
 	float kp = (fabs(k)/2+0.5) * servo_pid_kp;
-	imu963ra_get_acc();
 	imu963ra_get_gyro();
 	angle = pid_positional(&turn_pid,0,err,SERVO_MOTOR_LIMIT,
 							servo_pid_kp,servo_pid_ki,servo_pid_kd1,servo_pid_kd2);

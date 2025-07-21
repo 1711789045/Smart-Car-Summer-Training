@@ -126,7 +126,7 @@ int main(void)
 			if(stop_flag)
 				motor_setspeed(0,encoder_data_l,encoder_data_r,0);
 			if(motor_flag && !stop_flag){
-				motor_setspeed(speed,encoder_data_l,encoder_data_r,1);
+				motor_setspeed(speed,encoder_data_l,encoder_data_r,differential_mode);
 				
 			}
 			motor_f = 0;
