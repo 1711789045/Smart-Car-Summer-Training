@@ -136,9 +136,14 @@ void Flash_Read();
 void Flash_Write();
 void Flash_Erase();
 
-extern uint8 motor_flag,servo_flag;
+extern uint8 motor_flag,servo_flag,slow_down_flag;
+extern uint32 start_time;
 extern float kp,ki,kd1,kd2;
 extern int speed;
+void get_store_1();
+void get_store_2();
+
+
 
 #endif
 

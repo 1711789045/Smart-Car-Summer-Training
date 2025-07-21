@@ -157,6 +157,7 @@ int main(void)
 //-------------------------------------------------------------------------------------------------------------------
 void pit6_handler (void)
 {           
+	start_time++;
 	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
     encoder_data_r = 0-encoder_get_count(ENCODER_R);                          // 获取编码器计数
 	

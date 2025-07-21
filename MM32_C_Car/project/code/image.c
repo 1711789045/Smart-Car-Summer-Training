@@ -201,13 +201,7 @@ void search_line(const uint8 image[][IMAGE_W]){
 	
 	for(row = row_max;row >= row_min;row--){                   
 		if(!leftstop){
-			if(circle_flag){
-				search_time = 1;
-			}
-			else{
-				search_time = 2-cross_flag;
-			}
-			
+			search_time = 2-cross_flag;
 			do{
 				if(search_time == 1){                         //第一次没搜到
 					leftstartcol = reference_col;
@@ -255,12 +249,8 @@ void search_line(const uint8 image[][IMAGE_W]){
 		
 		
 		if(!rightstop){
-			if(circle_flag){
-				search_time = 1;
-			}
-			else{
-				search_time = 2-cross_flag;
-			}			do{
+			search_time = 2-cross_flag;
+			do{
 				if(search_time == 1){                         //第一次没搜到
 					rightstartcol = reference_col;
 					rightendcol = col_max;
@@ -546,6 +536,7 @@ uint8 image_find_circle_point(uint16 *edge_line,uint8 down_num,uint8 up_num){
 
 
 void image_circle_analysis(void){
+	
 	if(circle_flag == 0){           //识别环岛
 		mid_mode = 0;
 		for(int i = IMAGE_H-2;i>0;i--){
@@ -562,6 +553,8 @@ void image_circle_analysis(void){
 			end_point = image_find_circle_point(right_edge_line,start_point-10,10);
 		if(end_point){
 			if(start_point - end_point>30){
+				if(slow_down_flag)
+					get_store_1();
 				circle_flag = 1;
 				circle_time = 0;     //开始计时
 				beep_flag = 1;
@@ -574,6 +567,7 @@ void image_circle_analysis(void){
 			end_point = image_find_circle_point(right_edge_line,IMAGE_H - 5,start_point-5);
 		if(end_point){
 			if(end_point- start_point>30){
+				get_store_1();
 				circle_flag = 1;
 				circle_time = 5;     //开始计时
 				beep_flag = 1;
@@ -632,10 +626,14 @@ void image_circle_analysis(void){
 	else if(circle_flag == 5){       //沿左边线直走离开环岛
 		mid_mode = 1;
 		if(circle_time >= CIRCLE_5_TIME){
+			if(slow_down_flag)
+				get_store_2();
 			circle_time = 0;
 			circle_flag = 0;
 		}
 	}
+	
+	
 	
 }
 
@@ -744,7 +742,7 @@ void stop_analysis(const uint8 image[][IMAGE_W]){
 	}
 //	ips200_show_int(96,288,stop_count,4);
 
-	if(stop_count> 35){
+	if(stop_count> 35 && start_time > 30){
 		stop_flag = 1;
 //		beep_flag = 1;
 	}

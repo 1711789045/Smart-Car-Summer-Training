@@ -601,6 +601,20 @@ void circle(){
 	}
 }
 
+uint8 slow_down_flag = 1;
+void slow_down(){
+	 if(IS_OK){
+		if(slow_down_flag == 0){
+		    slow_down_flag = 1;
+		    showstr(0,(SON_NUM+1)*16,"slow_down_on");
+		}
+		else if(slow_down_flag == 1){
+		    slow_down_flag = 0;
+			showstr(0,(SON_NUM+1)*16,"slow_down_off");
+		}
+	}
+}
+
 void store_1_2000(){
 	if(IS_OK){
 		speed = 2000;
@@ -616,21 +630,47 @@ void store_1_2000(){
 
     }
 }
+
+void get_store_1(){
+	speed = 2000;
+	kp = 0.350;
+	kd1 = 0.60;
+	kd2 = 0;
+	differential_mode = 0;
+	if_circle = 1;
+	for(int i = 0;i<IMAGE_H;i++){
+		mid_weight[i] = mid_weight_1[i];
+	}    
+}
+
 void store_2_2500(){
 	if(IS_OK){
 		speed = 2500;
-		kp = 0.660;
+		kp = 0.70;
 		kd1 = 0;
 		kd2 = 0.50;
-		differential_mode = 0;
-		if_circle = 0;
+		differential_mode = 1;
+		if_circle = 1;
 
 		for(int i = 0;i<IMAGE_H;i++){
 			mid_weight[i] = mid_weight_2[i];
 		}
-		showstr(0,(SON_NUM+1)*16,"2500 0.660 0 0.50 weight2");
+		showstr(0,(SON_NUM+1)*16,"2500 0.7 0 0.50 weight2");
 
     }
+}
+
+
+void get_store_2(){
+	speed = 2500;
+	kp = 0.70;
+	kd1 = 0;
+	kd2 = 0.50;
+	differential_mode = 1;
+	if_circle = 1;
+	for(int i = 0;i<IMAGE_H;i++){
+		mid_weight[i] = mid_weight_2[i];
+	}
 }
 
 void store_3_3000(){
@@ -676,9 +716,11 @@ void show_image(){
 
 uint8 motor_flag = 0;
 uint8 servo_flag = 0;
+uint32 start_time = 0;
 //²Ëµ¥¿ÕÏÐº¯Êý
 void start(){
 	if(IS_OK){
+		start_time = 0;
 		stop_flag = 0;
         motor_flag = 1;
 		servo_flag = 1;
@@ -686,7 +728,7 @@ void start(){
 }
 
 float kp= 0.35,ki = 0,kd1 = 0.56,kd2 = 0;
-int speed=2000;
+int speed=200;
 float acc_percent = 0.05;
 uint16 test_d=20;
 uint32 test_e=32;
@@ -707,6 +749,7 @@ void FUN_INIT(){
 	fun_init(show_image	,"show_image");
 	fun_init(servo	,"<servo>");
 	fun_init(circle,"<circle>");
+	fun_init(slow_down,"<slow_down>");
 	fun_init(store_1_2000,"<speed2000>");
 	fun_init(store_2_2500,"<speed2500>");
 	fun_init(store_3_3000,"<speed3000>");

@@ -74,13 +74,13 @@ void motor_setspeed(int16 target, float current_l, float current_r,uint8 differe
 	}
 	if(differential_mode){
 		if(final_mid_line - IMAGE_W/2 >20)
-			speed_r = pid_increment(&pid_right,target- 500, current_r, 
+			speed_r = pid_increment(&pid_right,target- 400, current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 		else	
 			speed_r = pid_increment(&pid_right, target, current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 		if(final_mid_line - IMAGE_W/2 <-20)
-			speed_l = pid_increment(&pid_left, target- 500, current_l, 
+			speed_l = pid_increment(&pid_left, target- 400, current_l, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 		else
 			speed_l = pid_increment(&pid_left, target, current_l, 
@@ -94,7 +94,7 @@ void motor_setspeed(int16 target, float current_l, float current_r,uint8 differe
 }
 
 void motor_lose_line_protect(void){
-	if(prospect<5){
+	if(prospect<5 && start_time > 30){
 		stop_flag = 1;
 		servo_flag = 0;
 		motor_flag = 0;
