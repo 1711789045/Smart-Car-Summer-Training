@@ -1,5 +1,6 @@
 #include "zf_common_headfile.h"
 #include  "servo.h"
+#include "auto_menu.h"
 #include "pid.h"
 #include <stdlib.h>
 #include <math.h>
@@ -38,11 +39,18 @@ void servo_set_pid(float kp,float ki,float kd1,float kd2){
 void servo_control(uint8 mid_line){
 	float angle = 0;
 	float err = mid_line-MT9V03X_W/2.0+2;
-	float k = (exp(-fabs(err))-1)/(exp(-fabs(err))+1);
-	float kp = (fabs(k)/2+0.5) * servo_pid_kp;
+	float kp = 0;
+//	float k = (exp(-fabs(err))-1)/(exp(-fabs(err))+1);
+//	float kp = (fabs(k)/2 +0.5) * servo_pid_kp;
+	if(func_abs(err) <= 20){
+		kp = kp_min;
+	}
+	else{
+		kp = servo_pid_kp;
+	}
 	imu963ra_get_gyro();
 	angle = pid_positional(&turn_pid,0,err,SERVO_MOTOR_LIMIT,
-							servo_pid_kp,servo_pid_ki,servo_pid_kd1,servo_pid_kd2);
+							kp,servo_pid_ki,servo_pid_kd1,servo_pid_kd2);
 	
 //	ips200_show_float(96,288,kp,1,3);
 	

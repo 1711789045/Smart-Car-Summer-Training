@@ -49,7 +49,6 @@ uint8 mid_weight_2[IMAGE_H] = {           //各行中线权重
 
 uint8 mid_weight_3[IMAGE_H] = {           //各行中线权重
 	
-	1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
@@ -61,7 +60,7 @@ uint8 mid_weight_3[IMAGE_H] = {           //各行中线权重
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
-	1 ,1 ,1 ,1 ,1 
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
 
 	  
 };
@@ -104,6 +103,7 @@ uint8 mid_mode = 0;                      //循线模式，0表示循两边线，1循左边线，2
 uint8 circle_flag = 0;
 uint16 circle_time = 0;
 uint8 if_circle = 1;                     //1为启用圆环，0为关闭圆环
+uint8 stop_search_row = 0;
 
 void get_image(void){
 	memcpy(user_image,mt9v03x_image,IMAGE_H*IMAGE_W);
@@ -198,7 +198,8 @@ void search_line(const uint8 image[][IMAGE_W]){
 		left_edge_line[row]  = col_min - CONTRASTOFFSET;
         right_edge_line[row] = col_max + CONTRASTOFFSET;
     }
-	
+	stop_search_row = 0;
+
 	for(row = row_max;row >= row_min;row--){                   
 		if(!leftstop){
 			search_time = 2-cross_flag;
@@ -219,6 +220,8 @@ void search_line(const uint8 image[][IMAGE_W]){
 					if(temp1 < white_min_point && col == leftstartcol && leftstartcol == reference_col){
 						//判断参考列是否为黑点，若是则这行不再搜索左边线
 						leftstop = 1;
+						stop_search_row = row;
+						
 						for(stoppoint = row;stoppoint >= 0;stoppoint--){
 							left_edge_line[stoppoint ] = col_min;		//将自锁行以上的边线归零
 						}
@@ -267,6 +270,8 @@ void search_line(const uint8 image[][IMAGE_W]){
 					if(temp1 < white_min_point && col == rightstartcol && rightstartcol == reference_col){
 						//判断参考列是否为黑点，若是则这行不再搜索右边线
 						rightstop = 1;
+						stop_search_row = row;
+
 						for(stoppoint = row;stoppoint >= 0;stoppoint--){
 							right_edge_line[stoppoint ] = col_max;		//将自锁行以上的边线归零
 						}
@@ -660,9 +665,12 @@ void image_calculate_mid(uint8 mode){
 	
 	
 	for(int i = 0;i<IMAGE_H;i++){
+		if(i >= stop_search_row){
 			weight_sum += mid_weight[i];
 			mid_weight_sum += mid_line[i]*mid_weight[i];
 		}
+	
+	}
 	temp = (uint8)(mid_weight_sum/weight_sum);
 	if(!last_final_mid_line)
 		final_mid_line = temp;

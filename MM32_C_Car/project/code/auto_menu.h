@@ -138,8 +138,9 @@ void Flash_Erase();
 
 extern uint8 motor_flag,servo_flag,slow_down_flag;
 extern uint32 start_time;
-extern float kp,ki,kd1,kd2;
-extern int speed;
+extern float kp,ki,kd1,kd2,kp_min;
+extern int speed,dif_speed_plus,dif_speed_reduce;
+
 void get_store_1();
 void get_store_2();
 

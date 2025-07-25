@@ -73,18 +73,25 @@ void motor_setspeed(int16 target, float current_l, float current_r,uint8 differe
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 	}
 	if(differential_mode){
-		if(final_mid_line - IMAGE_W/2 >20)
-			speed_r = pid_increment(&pid_right,target- 400, current_r, 
+		if(final_mid_line - IMAGE_W/2 >20){
+			speed_r = pid_increment(&pid_right,target+ dif_speed_reduce, current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
-		else	
+			speed_l = pid_increment(&pid_left, target+ dif_speed_plus, current_l, 
+                                 SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
+		}
+		else if(final_mid_line - IMAGE_W/2 <-20){
+			speed_r = pid_increment(&pid_right,target+ dif_speed_plus, current_r, 
+                                 SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
+		
+			speed_l = pid_increment(&pid_left, target+ dif_speed_reduce, current_l, 
+                                 SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
+		}
+		else{
 			speed_r = pid_increment(&pid_right, target, current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
-		if(final_mid_line - IMAGE_W/2 <-20)
-			speed_l = pid_increment(&pid_left, target- 400, current_l, 
-                                 SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
-		else
 			speed_l = pid_increment(&pid_left, target, current_l, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
+		}
 	}
 //	ips200_show_int(0,208,speed_l,4);
 //	ips200_show_int(0,224,speed_r,4);

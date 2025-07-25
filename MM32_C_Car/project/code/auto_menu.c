@@ -727,9 +727,11 @@ void start(){
     }
 }
 
-float kp= 0.35,ki = 0,kd1 = 0.56,kd2 = 0;
+float kp= 0.35,ki = 0,kd1 = 0.56,kd2 = 0,kp_min = 0.45;
 int speed=200;
 float acc_percent = 0.05;
+int dif_speed_plus = 0,dif_speed_reduce = -400;
+
 uint16 test_d=20;
 uint32 test_e=32;
 
@@ -739,7 +741,12 @@ void UNIT_SET(){
     unit_param_set(&ki,TYPE_FLOAT   ,0.01    ,1  ,3,NORMAL_PAR,"ki");
     unit_param_set(&kd1,TYPE_FLOAT,0.01  ,1  ,3,NORMAL_PAR,"kd1");
 	unit_param_set(&kd2,TYPE_FLOAT,0.001  ,1  ,3,NORMAL_PAR,"kd2");
+	unit_param_set(&kp_min,TYPE_FLOAT ,0.01  ,1  ,3,NORMAL_PAR,"kp_min");
+	unit_param_set(&dif_speed_plus,TYPE_INT,100    ,4 ,0,NORMAL_PAR,"dif_plus");
+    unit_param_set(&dif_speed_reduce,TYPE_INT,100    ,4 ,0,NORMAL_PAR,"dif_reduce");
+
     unit_param_set(&speed,TYPE_INT,100    ,5 ,0,NORMAL_PAR,"speed");
+
 }
 
 void FUN_INIT(){
