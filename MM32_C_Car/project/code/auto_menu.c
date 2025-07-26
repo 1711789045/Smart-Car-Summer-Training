@@ -614,7 +614,19 @@ void slow_down(){
 		}
 	}
 }
-
+uint8 speed_policy_flag = 0;
+void speed_policy(){
+	 if(IS_OK){
+		if(speed_policy_flag == 0){
+		    speed_policy_flag = 1;
+		    showstr(0,(SON_NUM+1)*16,"speed_policy_on");
+		}
+		else if(speed_policy_flag == 1){
+		    speed_policy_flag = 0;
+			showstr(0,(SON_NUM+1)*16,"speed_policy_off");
+		}
+	}
+}
 void store_1_2000(){
 	if(IS_OK){
 		speed = 2000;
@@ -757,6 +769,7 @@ void FUN_INIT(){
 	fun_init(servo	,"<servo>");
 	fun_init(circle,"<circle>");
 	fun_init(slow_down,"<slow_down>");
+	fun_init(speed_policy,"<sp_policy>");
 	fun_init(store_1_2000,"<speed2000>");
 	fun_init(store_2_2500,"<speed2500>");
 	fun_init(store_3_3000,"<speed3000>");

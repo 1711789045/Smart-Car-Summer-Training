@@ -90,14 +90,14 @@ int main(void)
     // 此处编写用户代码 例如外设初始化代码等
 	
 	
-	ips200_show_string(0,160,"encoder_l:");
-	ips200_show_string(0,176,"encoder_r:");
-	ips200_show_string(0,192,"speed:");
-	ips200_show_string(0,208,"circle_flag:");
-	ips200_show_string(136,208,"midmode:");
+//	ips200_show_string(0,160,"encoder_l:");
+//	ips200_show_string(0,176,"encoder_r:");
+//	ips200_show_string(0,192,"speed:");
+//	ips200_show_string(0,208,"circle_flag:");
+//	ips200_show_string(136,208,"midmode:");
 
-	ips200_show_string(0,224,"left:");
-	ips200_show_string(0,240,"right:");
+//	ips200_show_string(0,224,"left:");
+//	ips200_show_string(0,240,"right:");
 
 	
     while(1)
@@ -133,16 +133,11 @@ int main(void)
 		}
 		
 
-		ips200_show_int(96,160,encoder_data_l,4);
-		ips200_show_int(96,176,encoder_data_r,4);
-		ips200_show_int(96,192,speed,4);
-		ips200_show_int(96,208,circle_flag,4);
-		ips200_show_int(200,208,mid_mode,4);
-
-		wireless_uart_send_byte(encoder_data_l);
-		wireless_uart_send_string("\n");
-		wireless_uart_send_byte(encoder_data_r);
-		wireless_uart_send_string("\n");
+//		ips200_show_int(96,160,encoder_data_l,4);
+//		ips200_show_int(96,176,encoder_data_r,4);
+//		ips200_show_int(96,192,prospect,4);
+//		ips200_show_int(96,208,circle_flag,4);
+//		ips200_show_int(200,208,mid_mode,4);
 		
         // 此处编写需要循环执行的代码
 		system_delay_ms(5);
