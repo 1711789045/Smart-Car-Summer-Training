@@ -5,6 +5,7 @@ typedef struct {
     float last_error;      // 上一次误差
     float prev_error;      // 上上次误差（用于微分）
     float output;          // 当前输出值
+	float last_i;
 } PID_INCREMENT_TypeDef;
 
 typedef struct {
@@ -20,12 +21,11 @@ float pid_increment(PID_INCREMENT_TypeDef *pid, float target, float current,
     float error = target - current;
     
     float p_term = kp * (error - pid->last_error);
-    float i_term = ki * error;       
+    float i_term = ki * error *0.9 + pid->last_i *0.1;       
     float d_term = kd * (error - 2*pid->last_error + pid->prev_error);
-    
     float increment = p_term + i_term + d_term;
     pid->output += increment;
-
+	pid->last_i = i_term;
     // 更新误差历史
     pid->prev_error = pid->last_error;
     pid->last_error = error;

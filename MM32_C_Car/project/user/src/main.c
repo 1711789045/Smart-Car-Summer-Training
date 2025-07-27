@@ -52,8 +52,7 @@
 #define PIT7                             (TIM7_PIT )                             // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
 #define PIT7_PRIORITY                    (TIM7_IRQn)                             // 对应周期中断的中断编号 在 mm32f3277gx.h 头文件中查看 IRQn_Type 枚举体
 
-
-
+uint32 count_10ms = 0;
 
 
 
@@ -80,7 +79,7 @@ int main(void)
 	 
 	pit_ms_init(PIT6, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
     interrupt_set_priority(PIT6_PRIORITY, 0); 
-	pit_ms_init(PIT7, 20);                                                      // 初始化 PIT 为周期中断 10ms 周期
+	pit_ms_init(PIT7, 10);                                                      // 初始化 PIT 为周期中断 10ms 周期
     interrupt_set_priority(PIT7_PRIORITY, 0); 
  
     // 此处编写用户代码 例如外设初始化代码等
@@ -104,7 +103,7 @@ int main(void)
 		show_process(NULL);
 		image_process(188,120,0);
 				
-//		motor_set_pid(kp,ki,kd1);
+		motor_set_pid(kp,ki,kd1);
 		
 		servo_process();
 		
@@ -132,12 +131,6 @@ int main(void)
 void pit6_handler (void)
 {           
 	start_time++;
-	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
-    encoder_data_r = 0-encoder_get_count(ENCODER_R);                          // 获取编码器计数
-	
-    encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
-    encoder_clear_count(ENCODER_R);                               // 清空编码器计数
-//	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
 	beep_off();
 	if(beep_flag){
 		beep_on();
@@ -148,11 +141,26 @@ void pit6_handler (void)
 
 void pit7_handler (void)
 {
-	servo_f = 1;
-	motor_f = 1;
+	count_10ms++;
+	if(count_10ms == 2){
+		//20ms
+		servo_f = 1;
+		circle_time++;
+		
+		//20ms
+		count_10ms = 0;
+	}
 	
-	circle_time++;
-
+	
+	//10ms
+	motor_f = 1;
+	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
+    encoder_data_r = 0-encoder_get_count(ENCODER_R);                          // 获取编码器计数
+	
+    encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
+    encoder_clear_count(ENCODER_R);                               // 清空编码器计数
+	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
+	
 	
 }
 // **************************** 代码区域 ****************************
