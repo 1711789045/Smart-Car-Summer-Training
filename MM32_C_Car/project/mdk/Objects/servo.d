@@ -88,4 +88,5 @@
   ..\..\libraries\zf_device\zf_device_wireless_uart.h \
   ..\..\libraries\components\fatfs\source\ffconf.h \
   ..\..\libraries\components\fatfs\source\ff.h ..\code\servo.h \
-  ..\code\auto_menu.h ..\code\pid.h D:\keil5\ARM\ARMCLANG\include\math.h
+  ..\code\auto_menu.h ..\code\pid.h ..\code\image.h \
+  D:\keil5\ARM\ARMCLANG\include\math.h

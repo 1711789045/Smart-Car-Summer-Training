@@ -601,7 +601,7 @@ void circle(){
 	}
 }
 
-uint8 slow_down_flag = 1;
+uint8 slow_down_flag = 0;
 void slow_down(){
 	 if(IS_OK){
 		if(slow_down_flag == 0){
@@ -679,7 +679,7 @@ void get_store_2(){
 	kd1 = 0;
 	kd2 = 0.50;
 	differential_mode = 1;
-	if_circle = 1;
+	if_circle = 0;
 	for(int i = 0;i<IMAGE_H;i++){
 		mid_weight[i] = mid_weight_2[i];
 	}
@@ -688,9 +688,9 @@ void get_store_2(){
 void store_3_3000(){
 	if(IS_OK){
 		speed = 3000;
-		kp = 0.8;
+		kp = 0.06;
 		kd1 = 0;
-		kd2 = 0.505;
+		kd2 = 0.50;
 		differential_mode = 1;
 		if_circle = 0;
 		for(int i = 0;i<IMAGE_H;i++){
@@ -708,7 +708,7 @@ void NULL_FUN(){
 void show_image(){
 	if(IS_OK){
 		while(1){
-			image_core(188,120,1);
+			image_process(188,120,1);
 			button_entry(NULL);
 
 			is_clear_flag = is_menu_clear();
@@ -741,7 +741,6 @@ void start(){
 
 float kp= 0.35,ki = 0,kd1 = 0.56,kd2 = 0,kp_min = 0.45;
 int speed=200;
-float acc_percent = 0.05;
 int dif_speed_plus = 0,dif_speed_reduce = -400;
 
 uint16 test_d=20;

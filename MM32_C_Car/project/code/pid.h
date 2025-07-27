@@ -5,6 +5,8 @@ typedef struct {
     float last_error;      // 上一次误差
     float prev_error;      // 上上次误差（用于微分）
     float output;          // 当前输出值
+	float last_i;          // 当前输出值
+
 } PID_INCREMENT_TypeDef;
 
 typedef struct {

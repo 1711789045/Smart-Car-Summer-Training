@@ -342,10 +342,10 @@ uint8 image_find_left_jump_point(uint8 down_num,uint8 up_num,uint8 model){
 				left_edge_line[down_num-i]-left_edge_line[down_num-i-5]>=8&&
 				left_edge_line[down_num-i]-left_edge_line[down_num-i-6]>=8&&
 				left_edge_line[down_num-i]-left_edge_line[down_num-i-7]>=8
-//			&&
-//				func_abs(left_edge_line[down_num-i]-left_edge_line[down_num-i+1])<=7&&
-//				func_abs(left_edge_line[down_num-i]-left_edge_line[down_num-i+2])<=7&&
-//				func_abs(left_edge_line[down_num-i]-left_edge_line[down_num-i+3])<=7
+			&&
+				func_abs(left_edge_line[down_num-i]-left_edge_line[down_num-i+1])<=7&&
+				func_abs(left_edge_line[down_num-i]-left_edge_line[down_num-i+2])<=10&&
+				func_abs(left_edge_line[down_num-i]-left_edge_line[down_num-i+3])<=15
 			){
 				temp_jump_point = (uint8)(down_num-i)+3;
 				return temp_jump_point;
@@ -359,10 +359,10 @@ uint8 image_find_left_jump_point(uint8 down_num,uint8 up_num,uint8 model){
 				left_edge_line[up_num+i]-left_edge_line[up_num+i+5]>=8&&
 				left_edge_line[up_num+i]-left_edge_line[up_num+i+6]>=8&&
 				left_edge_line[up_num+i]-left_edge_line[up_num+i+7]>=8
-//			&&
-//				func_abs(left_edge_line[up_num+i]-left_edge_line[up_num+i+1])<=7&&
-//				func_abs(left_edge_line[up_num+i]-left_edge_line[up_num+i+2])<=7&&
-//				func_abs(left_edge_line[up_num+i]-left_edge_line[up_num+i+3])<=7
+			&&
+				func_abs(left_edge_line[up_num+i]-left_edge_line[up_num+i+1])<=7&&
+				func_abs(left_edge_line[up_num+i]-left_edge_line[up_num+i+2])<=10&&
+				func_abs(left_edge_line[up_num+i]-left_edge_line[up_num+i+3])<=15
 			){
 				temp_jump_point = (uint8)(up_num+i)-3;
 				return temp_jump_point;
@@ -384,10 +384,10 @@ uint8 image_find_right_jump_point(uint8 down_num,uint8 up_num,uint8 model){
 				right_edge_line[down_num-i]-right_edge_line[down_num-i-5]<=-8&&
 				right_edge_line[down_num-i]-right_edge_line[down_num-i-6]<=-8&&
 				right_edge_line[down_num-i]-right_edge_line[down_num-i-7]<=-8
-//			&&
-//				func_abs(right_edge_line[down_num-i]-right_edge_line[down_num-i+1])<=7&&
-//				func_abs(right_edge_line[down_num-i]-right_edge_line[down_num-i+2])<=7&&
-//				func_abs(right_edge_line[down_num-i]-right_edge_line[down_num-i+3])<=7
+			&&
+				func_abs(right_edge_line[down_num-i]-right_edge_line[down_num-i+1])<=7&&
+				func_abs(right_edge_line[down_num-i]-right_edge_line[down_num-i+2])<=10&&
+				func_abs(right_edge_line[down_num-i]-right_edge_line[down_num-i+3])<=15
 			){
 				temp_jump_point = (uint8)(down_num-i)+3;
 				return temp_jump_point;
@@ -401,10 +401,10 @@ uint8 image_find_right_jump_point(uint8 down_num,uint8 up_num,uint8 model){
 				right_edge_line[up_num+i]-right_edge_line[up_num+i+5]<=-8&&
 				right_edge_line[up_num+i]-right_edge_line[up_num+i+6]<=-8&&
 				right_edge_line[up_num+i]-right_edge_line[up_num+i+7]<=-8
-//			&&
-//				func_abs(right_edge_line[up_num+i]-right_edge_line[up_num+i+1])<=7&&
-//				func_abs(right_edge_line[up_num+i]-right_edge_line[up_num+i+2])<=7&&
-//				func_abs(right_edge_line[up_num+i]-right_edge_line[up_num+i+3])<=7
+			&&
+				func_abs(right_edge_line[up_num+i]-right_edge_line[up_num+i+1])<=7&&
+				func_abs(right_edge_line[up_num+i]-right_edge_line[up_num+i+2])<=10&&
+				func_abs(right_edge_line[up_num+i]-right_edge_line[up_num+i+3])<=15
 			){
 				temp_jump_point = (uint8)(up_num+i)-3;
 				return temp_jump_point;
@@ -757,7 +757,7 @@ void stop_analysis(const uint8 image[][IMAGE_W]){
 }
 
 
-void image_core(uint16 display_width,uint16 display_height,uint8 mode){
+void image_process(uint16 display_width,uint16 display_height,uint8 mode){
 	get_image();
 	reference_point = 0; white_max_point = 0;white_min_point = 0;reference_col = 0;
 	

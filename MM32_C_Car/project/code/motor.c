@@ -6,6 +6,9 @@
 //占空比最大值是10000
 
 uint8 stop_flag = 0;
+uint8 motor_f = 0;
+int16 encoder_data_l = 0;
+int16 encoder_data_r = 0;
 
 static PID_INCREMENT_TypeDef pid_left = {0};
 static PID_INCREMENT_TypeDef pid_right = {0};
@@ -107,3 +110,18 @@ void motor_lose_line_protect(void){
 		motor_flag = 0;
 	}
 }
+
+void motor_process(void){
+	if(motor_f){
+			motor_lose_line_protect();
+			
+			if(stop_flag)
+				motor_setspeed(0,encoder_data_l,encoder_data_r,0);
+			if(motor_flag && !stop_flag){
+				motor_setspeed(speed,encoder_data_l,encoder_data_r,differential_mode);
+				
+			}
+			motor_f = 0;
+		}
+}
+

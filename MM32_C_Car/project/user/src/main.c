@@ -52,9 +52,7 @@
 #define PIT7                             (TIM7_PIT )                             // 使用的周期中断编号 如果修改 需要同步对应修改周期中断编号与 isr.c 中的调用
 #define PIT7_PRIORITY                    (TIM7_IRQn)                             // 对应周期中断的中断编号 在 mm32f3277gx.h 头文件中查看 IRQn_Type 枚举体
 
-int16 encoder_data_l = 0;
-int16 encoder_data_r = 0;
-uint8 servo_f = 0,motor_f = 0;
+
 
 
 
@@ -104,33 +102,14 @@ int main(void)
     {	
         // 此处编写需要循环执行的代码
 		show_process(NULL);
-		image_core(188,120,0);
+		image_process(188,120,0);
 				
-		servo_set_pid(kp,ki,kd1,kd2);
 //		motor_set_pid(kp,ki,kd1);
 		
-		if(servo_f){
-			if(servo_flag ){
-				servo_control(final_mid_line);
-			}
-			else{
-				servo_setangle(0);
-			}
-			servo_f = 0;
-		}
+		servo_process();
 		
+		motor_process();
 		
-		if(motor_f){
-			motor_lose_line_protect();
-			
-			if(stop_flag)
-				motor_setspeed(0,encoder_data_l,encoder_data_r,0);
-			if(motor_flag && !stop_flag){
-				motor_setspeed(speed,encoder_data_l,encoder_data_r,differential_mode);
-				
-			}
-			motor_f = 0;
-		}
 		
 
 //		ips200_show_int(96,160,encoder_data_l,4);
@@ -158,7 +137,7 @@ void pit6_handler (void)
 	
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
     encoder_clear_count(ENCODER_R);                               // 清空编码器计数
-	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
+//	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
 	beep_off();
 	if(beep_flag){
 		beep_on();

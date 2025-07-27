@@ -53,6 +53,6 @@ void get_reference_point(const uint8 image[][IMAGE_W]);
 void search_reference_col(const uint8 image[][IMAGE_W]);
 void search_line(const uint8 image[][IMAGE_W]);
 void image_display_edge_line(const uint8 image[][IMAGE_W],uint16 width,uint16 height);
-void image_core(uint16 display_width,uint16 display_height,uint8 mode);
+void image_process(uint16 display_width,uint16 display_height,uint8 mode);
 
 #endif

@@ -2,13 +2,14 @@
 #include  "servo.h"
 #include "auto_menu.h"
 #include "pid.h"
+#include "image.h"
 #include <stdlib.h>
 #include <math.h>
 
 static PID_POSITIONAL_TypeDef turn_pid = {0};
 
 float servo_pid_kp = 0.35,servo_pid_ki = 0,servo_pid_kd1 = 0.56,servo_pid_kd2 = 0;
-
+uint8 servo_f = 0;
 
 void servo_init(void){
 	// 初始化pwm通道
@@ -42,12 +43,14 @@ void servo_control(uint8 mid_line){
 	float kp = 0;
 //	float k = (exp(-fabs(err))-1)/(exp(-fabs(err))+1);
 //	float kp = (fabs(k)/2 +0.5) * servo_pid_kp;
-	if(func_abs(err) <= 20){
-		kp = kp_min;
-	}
-	else{
-		kp = servo_pid_kp;
-	}
+//	if(func_abs(err) <= 20){
+//		kp = kp_min;
+//	}
+//	else{
+//		kp = servo_pid_kp;
+//	}
+	kp = func_limit_ab(servo_pid_kp * (err*err)/100 + kp_min,0,3);
+	
 	imu963ra_get_gyro();
 	angle = pid_positional(&turn_pid,0,err,SERVO_MOTOR_LIMIT,
 							kp,servo_pid_ki,servo_pid_kd1,servo_pid_kd2);
@@ -57,3 +60,15 @@ void servo_control(uint8 mid_line){
 	servo_setangle(angle);
 }
 
+void servo_process(void){
+	if(servo_f){
+		servo_set_pid(kp,ki,kd1,kd2);
+		if(servo_flag ){
+			servo_control(final_mid_line);
+		}
+		else{
+			servo_setangle(0);
+		}
+		servo_f = 0;
+	}
+}
