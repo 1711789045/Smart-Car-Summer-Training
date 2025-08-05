@@ -40,6 +40,8 @@
 #include "image.h"
 #include "servo.h"
 #include "beep.h"
+#include "imu.h"
+#include "control.h"
 // 打开新的工程或者工程移动了位置务必执行以下操作
 // 第一步 关闭上面所有打开的文件
 // 第二步 project->clean  等待下方进度条走完
@@ -76,6 +78,7 @@ int main(void)
 	imu963ra_init();
 	
 	wireless_uart_init();
+	
 	 
 	pit_ms_init(PIT6, 100);                                                      // 初始化 PIT 为周期中断 100ms 周期
     interrupt_set_priority(PIT6_PRIORITY, 0); 
@@ -100,21 +103,29 @@ int main(void)
     while(1)
     {	
         // 此处编写需要循环执行的代码
-		show_process(NULL);
-		image_process(188,120,0);
-				
-		motor_set_pid(kp,ki,kd1);
+		if(count_10ms){
+			show_process(NULL);
+			image_process(188,120,0);
+		}
+//		motor_set_pid(kp,ki,kd1);
 		
-		servo_process();
+		all_control();
 		
-		motor_process();
+//		motor_process();
+//		
+//		servo_process();
 		
-		
+//		printf("%f\n", filtering_angle);	//发送到vofa（调参用）
+//		printf("%d,%d,%d\n", gx,gy,gz);	//发送到vofa（调参用）
+//		printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
+
 
 //		ips200_show_int(96,160,encoder_data_l,4);
 //		ips200_show_int(96,176,encoder_data_r,4);
-//		ips200_show_int(96,192,prospect,4);
-//		ips200_show_int(96,208,circle_flag,4);
+//		ips200_show_int(96,192,go_flag,4);
+//		ips200_show_int(96,208,block_time,4);
+//		ips200_show_int(96,192,final_mid_line-MT9V03X_W/2.0,4);
+//		ips200_show_float(96,208,angle,3,2);
 //		ips200_show_int(200,208,mid_mode,4);
 		
         // 此处编写需要循环执行的代码
@@ -129,13 +140,15 @@ int main(void)
 // 使用示例     pit_handler();
 //-------------------------------------------------------------------------------------------------------------------
 void pit6_handler (void)
-{           
+{
+	stop_time++;    
 	start_time++;
-	beep_off();
 	if(beep_flag){
 		beep_on();
 		beep_flag -= 0.5;
 	}
+	else
+		beep_off();
 	
 }
 
@@ -153,13 +166,13 @@ void pit7_handler (void)
 	
 	
 	//10ms
+//	first_order_complementary_filtering();
 	motor_f = 1;
 	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
     encoder_data_r = 0-encoder_get_count(ENCODER_R);                          // 获取编码器计数
 	
     encoder_clear_count(ENCODER_L);                                       // 清空编码器计数
     encoder_clear_count(ENCODER_R);                               // 清空编码器计数
-	printf("%d,%d,%d\n", speed, encoder_data_l, encoder_data_r);	//发送到vofa（调参用）
 	
 	
 }

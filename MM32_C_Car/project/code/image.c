@@ -65,6 +65,44 @@ uint8 mid_weight_3[IMAGE_H] = {           //各行中线权重
 	  
 };
 
+uint8 mid_weight_4[IMAGE_H] = {           //各行中线权重
+	
+	
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	7 ,8 ,9 ,10,11,12,13,14,15,16,
+	17,18,19,20,20,20,20,19,18,17,
+	16,15,14,13,12,11,10,9 ,8 ,7 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
+
+	  
+};
+
+uint8 mid_weight_5[IMAGE_H] = {           //各行中线权重
+	
+	
+	
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	7 ,8 ,9 ,10,11,12,13,14,15,16,
+	17,18,19,20,20,20,20,19,18,17,
+	16,15,14,13,12,11,10,9 ,8 ,7 ,
+	6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,6 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
+
+	  
+};
+
 uint8 mid_weight[IMAGE_H] = {           //各行中线权重
 	
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
@@ -102,7 +140,7 @@ uint8 cross_flag = 0;                    //十字标志位
 uint8 mid_mode = 0;                      //循线模式，0表示循两边线，1循左边线，2循右边线
 uint8 circle_flag = 0;
 uint16 circle_time = 0;
-uint8 if_circle = 1;                     //1为启用圆环，0为关闭圆环
+uint8 if_circle = 0;                     //1为启用圆环，0为关闭圆环
 uint8 stop_search_row = 0;
 
 void get_image(void){
@@ -688,7 +726,7 @@ void image_calculate_prospect(const uint8 image[][IMAGE_W]){
 		temp1 = image[row][col];
 		temp2 = image[row-CONTRASTOFFSET][col];
 		
-		if(row == 5){   //计算对比度
+		if(row == 4){   //计算对比度
 			prospect = IMAGE_H-(uint8)row;
 			break;
 		}
@@ -751,7 +789,7 @@ void stop_analysis(const uint8 image[][IMAGE_W]){
 //	ips200_show_int(96,288,stop_count,4);
 
 	if(stop_count> 35 && start_time > 30){
-		stop_flag = 1;
+		go_flag = 0;
 //		beep_flag = 1;
 	}
 }

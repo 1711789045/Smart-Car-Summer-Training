@@ -6,9 +6,9 @@
   ..\..\libraries\sdk\hal_device_registers.h \
   ..\..\libraries\sdk\mm32f3277g.h \
   ..\..\libraries\sdk\CMSIS\Include\core_cm3.h \
-  C:\Users\ASUS\learngit\Intelligent-Car-Summer-Training\MM32_C_Car\libraries\sdk\CMSIS\Include\cmsis_version.h \
-  C:\Users\ASUS\learngit\Intelligent-Car-Summer-Training\MM32_C_Car\libraries\sdk\CMSIS\Include\cmsis_compiler.h \
-  C:\Users\ASUS\learngit\Intelligent-Car-Summer-Training\MM32_C_Car\libraries\sdk\CMSIS\Include\cmsis_armclang.h \
+  C:\Users\ASUS\Desktop\MM32_C_Car\libraries\sdk\CMSIS\Include\cmsis_version.h \
+  C:\Users\ASUS\Desktop\MM32_C_Car\libraries\sdk\CMSIS\Include\cmsis_compiler.h \
+  C:\Users\ASUS\Desktop\MM32_C_Car\libraries\sdk\CMSIS\Include\cmsis_armclang.h \
   D:\keil5\ARM\ARMCLANG\include\arm_compat.h \
   D:\keil5\ARM\ARMCLANG\include\arm_acle.h \
   ..\..\libraries\sdk\mm32f3277g_features.h \
@@ -89,4 +89,4 @@
   ..\..\libraries\components\fatfs\source\ffconf.h \
   ..\..\libraries\components\fatfs\source\ff.h ..\code\servo.h \
   ..\code\auto_menu.h ..\code\pid.h ..\code\image.h \
-  D:\keil5\ARM\ARMCLANG\include\math.h
+  D:\keil5\ARM\ARMCLANG\include\math.h ..\code\motor.h

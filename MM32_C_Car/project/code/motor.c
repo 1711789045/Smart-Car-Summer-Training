@@ -3,17 +3,21 @@
 #include "pid.h"
 #include "auto_menu.h"
 #include "image.h"
+#include "control.h"
+#include "servo.h"
+#include "beep.h"
 //占空比最大值是10000
 
-uint8 stop_flag = 0;
+uint8 go_flag = 0,stop_time = 0,stop_flag = 0,block_time = 0;
 uint8 motor_f = 0;
 int16 encoder_data_l = 0;
 int16 encoder_data_r = 0;
+int16 speed_l = 0,speed_r = 0;
 
 static PID_INCREMENT_TypeDef pid_left = {0};
 static PID_INCREMENT_TypeDef pid_right = {0};
 
-float motor_pid_kp = 0.6,motor_pid_ki = 0.060,motor_pid_kd = 0;
+float motor_pid_kp = 8.0,motor_pid_ki = 2.0,motor_pid_kd = 4.0;
 uint8 differential_mode = 0;
 
 void motor_init(void){
@@ -67,7 +71,7 @@ void motor_setpwm(uint8 motor,int16 speed){
 }
 
 void motor_setspeed(int16 target, float current_l, float current_r,uint8 differential_mode) {
-	int16 speed_l = 0,speed_r = 0;
+	speed_l = 0,speed_r = 0;
 	if(!differential_mode){
 		speed_l = pid_increment(&pid_left, target, current_l, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
@@ -76,17 +80,22 @@ void motor_setspeed(int16 target, float current_l, float current_r,uint8 differe
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 	}
 	if(differential_mode){
-		if(final_mid_line - IMAGE_W/2 >20){
-			speed_r = pid_increment(&pid_right,target+ dif_speed_reduce, current_r, 
+		float err = final_mid_line - IMAGE_W/2;
+//		float k = func_limit_ab((func_abs(err)-10),0,100);
+		float k = func_abs(angle);
+
+
+		if(final_mid_line - IMAGE_W/2 >10){
+			speed_r = pid_increment(&pid_right,target+ (int16)(dif_speed_reduce*k), current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
-			speed_l = pid_increment(&pid_left, target+ dif_speed_plus, current_l, 
+			speed_l = pid_increment(&pid_left, target+  (int16)(dif_speed_plus*k), current_l, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 		}
-		else if(final_mid_line - IMAGE_W/2 <-20){
-			speed_r = pid_increment(&pid_right,target+ dif_speed_plus, current_r, 
+		else if(final_mid_line - IMAGE_W/2 <-10){
+			speed_r = pid_increment(&pid_right,target+ (int16)(dif_speed_plus*k), current_r, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 		
-			speed_l = pid_increment(&pid_left, target+ dif_speed_reduce, current_l, 
+			speed_l = pid_increment(&pid_left, target+ (int16)(dif_speed_reduce*k), current_l, 
                                  SPEED_LIMIT, motor_pid_kp, motor_pid_ki, motor_pid_kd);
 		}
 		else{
@@ -102,26 +111,50 @@ void motor_setspeed(int16 target, float current_l, float current_r,uint8 differe
     motor_setpwm(MOTOR_L, speed_l);
     motor_setpwm(MOTOR_R, speed_r);
 }
-
-void motor_lose_line_protect(void){
-	if(prospect<5 && start_time > 30){
-		stop_flag = 1;
-		servo_flag = 0;
-		motor_flag = 0;
+void motor_stop(void){
+	motor_setspeed(0,encoder_data_l,encoder_data_r,0);
+	if(stop_time == 30){
+		beep_flag = 1;
+		stop_flag = 0;			
+		motor_setpwm(MOTOR_L, 0);
+		motor_setpwm(MOTOR_R, 0);
 	}
 }
 
+void motor_protect(void){
+	if(prospect<5 && start_time > 30){
+		go_flag = 0;
+		stop_flag = 1;
+		stop_time = 0;
+		beep_flag = 1;
+	}
+	if((encoder_data_l<=100 && speed_l>=5000) || (encoder_data_r<=100  && speed_r>=5000)){
+		block_time++;
+		
+		if(block_time >= 40){
+			go_flag = 0;
+			stop_flag = 1;
+			stop_time = 0;
+			beep_flag = 3;
+		}
+	}
+	else
+		block_time = 0;
+}
+
+
+
 void motor_process(void){
 	if(motor_f){
-			motor_lose_line_protect();
-			
-			if(stop_flag)
-				motor_setspeed(0,encoder_data_l,encoder_data_r,0);
-			if(motor_flag && !stop_flag){
-				motor_setspeed(speed,encoder_data_l,encoder_data_r,differential_mode);
-				
-			}
-			motor_f = 0;
+		
+		if(go_flag){
+			motor_setspeed(speed,encoder_data_l,encoder_data_r,differential_mode);
+			motor_protect();
 		}
+		if(stop_flag){
+			motor_stop();
+		}
+		motor_f = 0;
+	}
 }
 

@@ -627,9 +627,9 @@ void speed_policy(){
 		}
 	}
 }
-void store_1_2000(){
+void store_1_200(){
 	if(IS_OK){
-		speed = 2000;
+		basic_speed = 200;
 		kp = 0.350;
 		kd1 = 0.60;
 		kd2 = 0;
@@ -638,13 +638,13 @@ void store_1_2000(){
 		for(int i = 0;i<IMAGE_H;i++){
 			mid_weight[i] = mid_weight_1[i];
 		}
-		showstr(0,(SON_NUM+1)*16,"2000 0.350 0.60 0 weight1");
+		showstr(0,(SON_NUM+1)*16,"200  weight1");
 
     }
 }
 
 void get_store_1(){
-	speed = 2000;
+	basic_speed = 200;
 	kp = 0.350;
 	kd1 = 0.60;
 	kd2 = 0;
@@ -655,26 +655,29 @@ void get_store_1(){
 	}    
 }
 
-void store_2_2500(){
+void store_2_250(){
 	if(IS_OK){
-		speed = 2500;
-		kp = 0.70;
+		basic_speed = 250;
+		kp = 0.012;
+		kp_min = 0.35;
 		kd1 = 0;
 		kd2 = 0.50;
 		differential_mode = 1;
-		if_circle = 1;
+		dif_speed_plus = 0,dif_speed_reduce = -60;
+
+		if_circle = 0;
 
 		for(int i = 0;i<IMAGE_H;i++){
 			mid_weight[i] = mid_weight_2[i];
 		}
-		showstr(0,(SON_NUM+1)*16,"2500 0.7 0 0.50 weight2");
+		showstr(0,(SON_NUM+1)*16,"250  weight2");
 
     }
 }
 
 
 void get_store_2(){
-	speed = 2500;
+	basic_speed = 250;
 	kp = 0.70;
 	kd1 = 0;
 	kd2 = 0.50;
@@ -685,18 +688,62 @@ void get_store_2(){
 	}
 }
 
-void store_3_3000(){
+void store_3_300(){
 	if(IS_OK){
-		speed = 3000;
-		kp = 0.06;
+		basic_speed = 300;
+		kp = 0.020;
+		kp_min = 0.35;
 		kd1 = 0;
-		kd2 = 0.50;
+		kd2 = 0.25;
 		differential_mode = 1;
+		dif_speed_plus = 3.5,dif_speed_reduce = -7.0;
+
 		if_circle = 0;
+
 		for(int i = 0;i<IMAGE_H;i++){
 			mid_weight[i] = mid_weight_3[i];
 		}
-		showstr(0,(SON_NUM+1)*16,"3000 0.380 0.550 0.10 weight3");
+		showstr(0,(SON_NUM+1)*16,"300  weight3");
+
+    }
+}
+
+void store_4_350(){
+	if(IS_OK){
+		basic_speed = 350;
+		kp = 0.020;
+		kp_min = 0.35;
+		kd1 = 0;
+		kd2 = 0.25;
+		differential_mode = 1;
+		dif_speed_plus = 0.0,dif_speed_reduce = -32.0;
+
+		if_circle = 0;
+
+		for(int i = 0;i<IMAGE_H;i++){
+			mid_weight[i] = mid_weight_4[i];
+		}
+		showstr(0,(SON_NUM+1)*16,"350  weight4");
+
+    }
+}
+
+void store_5_400(){
+	if(IS_OK){
+		basic_speed = 400;
+		kp = 0.012;
+		kp_min = 0.35;
+		kd1 = 0;
+		kd2 = 0.50;
+		differential_mode = 1;
+		dif_speed_plus = 1.0,dif_speed_reduce = -7.0;
+
+		if_circle = 0;
+
+		for(int i = 0;i<IMAGE_H;i++){
+			mid_weight[i] = mid_weight_5[i];
+		}
+		showstr(0,(SON_NUM+1)*16,"400  weight5");
 
     }
 }
@@ -733,30 +780,28 @@ uint32 start_time = 0;
 void start(){
 	if(IS_OK){
 		start_time = 0;
-		stop_flag = 0;
-        motor_flag = 1;
-		servo_flag = 1;
+		go_flag = 1;
     }
 }
 
-float kp= 0.35,ki = 0,kd1 = 0.56,kd2 = 0,kp_min = 0.45;
-int speed=200;
-int dif_speed_plus = 0,dif_speed_reduce = -400;
+float kp= 0.35,ki = 0,kd1 = 0.56,kd2 = 0,kp_min = 0.35;
+int basic_speed=0;
+float dif_speed_plus = 0,dif_speed_reduce = -10;
 
 uint16 test_d=20;
 uint32 test_e=32;
 
 void UNIT_SET(){
 	//菜单单元调参参数初始化
-    unit_param_set(&kp,TYPE_FLOAT ,0.01  ,1  ,3,NORMAL_PAR,"kp");
+    unit_param_set(&kp,TYPE_FLOAT ,0.001  ,1  ,3,NORMAL_PAR,"kp");
     unit_param_set(&ki,TYPE_FLOAT   ,0.01    ,1  ,3,NORMAL_PAR,"ki");
     unit_param_set(&kd1,TYPE_FLOAT,0.01  ,1  ,3,NORMAL_PAR,"kd1");
 	unit_param_set(&kd2,TYPE_FLOAT,0.001  ,1  ,3,NORMAL_PAR,"kd2");
 	unit_param_set(&kp_min,TYPE_FLOAT ,0.01  ,1  ,3,NORMAL_PAR,"kp_min");
-	unit_param_set(&dif_speed_plus,TYPE_INT,100    ,4 ,0,NORMAL_PAR,"dif_plus");
-    unit_param_set(&dif_speed_reduce,TYPE_INT,100    ,4 ,0,NORMAL_PAR,"dif_reduce");
+	unit_param_set(&dif_speed_plus,TYPE_FLOAT,0.1    ,2,2,NORMAL_PAR,"dif_plus");
+    unit_param_set(&dif_speed_reduce,TYPE_FLOAT,0.1    ,2 ,2,NORMAL_PAR,"dif_reduce");
 
-    unit_param_set(&speed,TYPE_INT,100    ,5 ,0,NORMAL_PAR,"speed");
+    unit_param_set(&basic_speed,TYPE_INT,10    ,5 ,0,NORMAL_PAR,"b_speed");
 
 }
 
@@ -769,9 +814,12 @@ void FUN_INIT(){
 	fun_init(circle,"<circle>");
 	fun_init(slow_down,"<slow_down>");
 	fun_init(speed_policy,"<sp_policy>");
-	fun_init(store_1_2000,"<speed2000>");
-	fun_init(store_2_2500,"<speed2500>");
-	fun_init(store_3_3000,"<speed3000>");
+	fun_init(store_1_200,"<speed200>");
+	fun_init(store_2_250,"<speed250>");
+	fun_init(store_3_300,"<speed300>");
+	fun_init(store_4_350,"<speed350>");
+	fun_init(store_5_400,"<speed400>");
+
 
 
 }
