@@ -15,7 +15,7 @@ uint8 servo_f = 0;
 
 void servo_init(void){
 	// 初始化pwm通道
-    pwm_init(SERVO_MOTOR_PWM, SERVO_MOTOR_FREQ, SERVO_MOTOR_MID);
+    pwm_init(SERVO_MOTOR_PWM, SERVO_MOTOR_FREQ, 0);
 
 }
 

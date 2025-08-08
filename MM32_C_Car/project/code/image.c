@@ -79,7 +79,7 @@ uint8 mid_weight_4[IMAGE_H] = {           //各行中线权重
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
 	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,
-	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 
+	1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1 ,1  
 
 	  
 };
@@ -790,7 +790,9 @@ void stop_analysis(const uint8 image[][IMAGE_W]){
 
 	if(stop_count> 35 && start_time > 30){
 		go_flag = 0;
-//		beep_flag = 1;
+		stop_flag = 1;
+		stop_time = 0;
+		beep_flag = 1;
 	}
 }
 
@@ -813,7 +815,8 @@ void image_process(uint16 display_width,uint16 display_height,uint8 mode){
 		image_cross_analysis();
 	}
 	
-	stop_analysis(user_image);
+	if(go_flag)
+		stop_analysis(user_image);
 	
 
 	image_calculate_mid(mid_mode);
