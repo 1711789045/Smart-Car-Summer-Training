@@ -167,6 +167,7 @@ void pit7_handler (void)
 	
 	//10ms
 //	first_order_complementary_filtering();
+	ramp_f = 1;
 	motor_f = 1;
 	encoder_data_l = encoder_get_count(ENCODER_L);                  // 获取编码器计数
     encoder_data_r = 0-encoder_get_count(ENCODER_R);                          // 获取编码器计数

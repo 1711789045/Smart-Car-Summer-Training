@@ -8,15 +8,15 @@
 #include "image.h"
 
 int speed = 0;
-uint8 ramp_flag = 0;
+uint8 ramp_flag = 0,ramp_f = 0;
 
 void ramp_analysis(void){
-	if(filtering_angle < -600){
+	if(ramp_flag == 0 && filtering_angle < -400){
 		ramp_flag = 1;
 		beep_flag = 1;
 	}
-	if(filtering_angle>-400){
-		ramp_flag = 0;
+	if(ramp_flag && filtering_angle>-200){
+		ramp_flag = 2;
 	}
 }
 
@@ -40,9 +40,13 @@ void all_control(void){
 		
 		
 	}
-//	ramp_analysis();
-//	if(ramp_flag)
-//		speed = 150;
+	if(ramp_f){
+		first_order_complementary_filtering();
+		ramp_analysis();
+		ramp_f = 0;
+	}
+	if(ramp_flag == 1)
+		speed = 100;
 	
 	servo_process();
 	motor_process();
